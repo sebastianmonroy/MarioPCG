@@ -27,6 +27,8 @@ public class MyLevel extends Level{
 	    private int difficulty;
 	    private int type;
 		private int gaps;
+		private int minCoinCount = 10;
+		private int minEnemyCount = 10;
 		private PlayerMetrics GPM;
 		private PlayerType PT;
 		
@@ -45,51 +47,23 @@ public class MyLevel extends Level{
 			COLLECTOR
 		}
 
-		public int getNumEnemiesToSpawn() {
-			return (int) (getKillPercentage() * GPM.totalEnemies * 3);
-		}
-
-		public int getNumGapsToSpawn() {
-			return (int) (0.5 * getAimlessJumpCount());
-		}
-
-		public double getProbabilityOfStraights() {
-			return getRunPercentage();
-		}
-
-		public int getNumCoinsToSpawn() {
-			return (int) (getCoinPercentage() * GPM.totalCoins * 3);
-		}
-
-		public int getNumPowerToSpawn() {
-			return (int) ((0.75 + 3 * (GPM.enemyKillByFire / getKillCount())) * GPM.totalpowerBlocks);
-		}
-
-		public double getProbabilityOfTurtles() {
-			return (GPM.RedTurtlesKilled + GPM.GreenTurtlesKilled) / getKillCount();
-		}
-
-		public double getProbabilityOfGoombas() {
-			return GPM.GoombasKilled / getKillCount();
-		}
-
-		public double getProbabilityOfFlowers() {
-			return (GPM.JumpFlowersKilled + GPM.ChompFlowersKilled) / getKillCount();
-		}
-
-		public double getProbabilityOfCannons() {
-			return (GPM.CannonBallKilled / 1.5) / getKillCount();
-		}
-
-
-		/*public PlayerType getPlayerType() {
+		public PlayerType getPlayerType() {
 			double coinThreshold;	// min percentage of coins to be considered "high"
 			double killThreshold;	// min percentage of kills to be considered "high"
 			double jumpThreshold;	// min number of aimless jumps to be considered "high"
 			double runThreshold;	// min percentage of running to be considered "high"
 
+			/*if (getCoinPercentage() < coinThreshold && getKillPercentage() < killThreshold) {
 
-		}*/
+			} else if (getCoinPercentage() < coinThreshold && getKillPercentage() > killThreshold) {
+
+			} else if (getCoinPercentage() > coinThreshold && getKillPercentage() < killThreshold) {
+
+			} else if (getCoinPercentage() > coinThreshold && getKillPercentage() > killThreshold) {
+
+			}*/
+
+		}
 
 		public double getCoinPercentage() {
 			return (double) (GPM.coinsCollected / GPM.totalCoins);
