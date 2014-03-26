@@ -1,1 +1,1 @@
-java -cp bin dk.itu.mario.engine.Play
+java -cp bin dk.itu.mario.engine.PlayCustomized

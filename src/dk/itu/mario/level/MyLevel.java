@@ -27,43 +27,111 @@ public class MyLevel extends Level{
 	    private int difficulty;
 	    private int type;
 		private int gaps;
-		private int minCoinCount = 10;
-		private int minEnemyCount = 10;
-		private PlayerMetrics GPM;
-		private PlayerType PT;
-		
-		// SPEEDRUNNER 	- low kill percentage, low coin percentage, 
-		//				  high run percentage, low completion time, 
-		// 				  low percentage destroyed blocks
-		// MASSMURDERER - high kill percentage, low coin percentage
-		// EXPLORER 	- low kill percentage, high coin percentage, 
-		// 				  high aimless jump count, high percentage destroyed blocks
-		// COMPLETIONIST- high kill percentage, high coin percentage, 
-		// 				  high percentage destroyed blocks
-		public enum PlayerType {
-			SPEEDRUNNER,
-			MASSMURDERER, 
-			EXPLORER, 
-			COLLECTOR
+		private int MIN_ENEMIES = 10;
+		private int MAX_ENEMIES = 100;
+		private int MIN_COINS = 10;
+		private int MAX_COINS = 100;
+		private int MIN_GAPS = 5;
+		private int MAX_GAPS = 20;
+		private int MIN_POWERS = 1;
+		private int MAX_POWERS = 5;
+		private int MIN_COINBLOCKS = 20;
+		private int MAX_COINBLOCKS = 100;
+		private int MIN_COMPLETION_TIME = 200-173;
+		private int MAX_COMPLETION_TIME = 200;
+		private GamePlay GPM;
+
+
+		public int getNumEnemiesToSpawn() {
+			int result;
+
+			result = (int) (getKillPercentage() * GPM.totalEnemies * 2);
+
+			if (result < MIN_ENEMIES) {
+				result = MIN_ENEMIES;
+			} else if (result > MAX_ENEMIES) {
+				result = MAX_ENEMIES;
+			}
+
+			return result;
 		}
 
-		public PlayerType getPlayerType() {
+		public int getNumCoinsToSpawn() {
+			int result;
+
+			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
+
+			if (result < MIN_COINS) {
+				result = MIN_COINS;
+			} else if (result > MAX_COINS) {
+				result = MAX_COINS;
+			}
+
+			return result;
+		}
+
+		public int getNumGapsToSpawn() {
+			int result;
+
+			//result = 
+
+			if (result < MIN_GAPS) {
+				result = MIN_GAPS;
+			} else if (result > MAX_GAPS) {
+				result = MAX_GAPS;
+			}
+
+			return result;
+		}
+
+		public int getNumPowerToSpawn() {
+			int result;
+
+			result = (int) ((0.75 + 3 * (GPM.enemyKillByFire / getKillCount())) * GPM.totalpowerBlocks);
+
+			if (result < MIN_POWERS) {
+				result = MIN_POWERS;
+			} else if (result > MAX_POWERS) {
+				result = MAX_POWERS;
+			}
+
+			return result;
+		}
+
+		public int getNumCoinBlocksToSpawn() {
+			int result;
+
+			result = (int) (0.2f + getNumCoinsToSpawn());
+
+			if (result < MIN_COINBLOCKS) {
+				result = MIN_COINBLOCKS;
+			} else if (result > MAX_COINBLOCKS) {
+				result = MAX_COINBLOCKS;
+			}
+
+			return result;
+		}
+
+		public double getProbabilityOfTurtles() {
+			return (GPM.RedTurtlesKilled + GPM.GreenTurtlesKilled) / getKillCount();
+		}
+
+		public double getProbabilityOfGoombas() {
+			return GPM.GoombasKilled / getKillCount();
+		}
+
+		public double getProbabilityOfCannons() {
+			return (GPM.CannonBallKilled / 1.5) / getKillCount();
+		}
+
+		/*public PlayerType getPlayerType() {
 			double coinThreshold;	// min percentage of coins to be considered "high"
 			double killThreshold;	// min percentage of kills to be considered "high"
 			double jumpThreshold;	// min number of aimless jumps to be considered "high"
 			double runThreshold;	// min percentage of running to be considered "high"
 
-			/*if (getCoinPercentage() < coinThreshold && getKillPercentage() < killThreshold) {
 
-			} else if (getCoinPercentage() < coinThreshold && getKillPercentage() > killThreshold) {
-
-			} else if (getCoinPercentage() > coinThreshold && getKillPercentage() < killThreshold) {
-
-			} else if (getCoinPercentage() > coinThreshold && getKillPercentage() > killThreshold) {
-
-			}*/
-
-		}
+		}*/
 
 		public double getCoinPercentage() {
 			return (double) (GPM.coinsCollected / GPM.totalCoins);
@@ -90,6 +158,15 @@ public class MyLevel extends Level{
 		}
 
 
+
+
+
+
+
+
+
+
+
 		public MyLevel(int width, int height)
 	    {
 			super(width, height);
@@ -105,70 +182,16 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	        this.type = type;
-	        this.difficulty = difficulty;
-
-	        lastSeed = seed;
-	        random = new Random(seed);
-
-	        //create the start location
-	        int length = 0;
-	        length += buildStraight(0, width, true);
-
-	        //create all of the medium sections
-	        while (length < width - 64)
-	        {
-	            //length += buildZone(length, width - length);
-				length += buildStraight(length, width-length, false);
-				length += buildStraight(length, width-length, false);
-				length += buildHillStraight(length, width-length);
-				length += buildJump(length, width-length);
-				length += buildTubes(length, width-length);
-				length += buildCannons(length, width-length);
-	        }
-
-	        //set the end piece
-	        int floor = height - 1 - random.nextInt(4);
-
-	        xExit = length + 8;
-	        yExit = floor;
-
-	        // fills the end piece
-	        for (int x = length; x < width; x++)
-	        {
-	            for (int y = 0; y < height; y++)
-	            {
-	                if (y >= floor)
-	                {
-	                    setBlock(x, y, GROUND);
-	                }
-	            }
-	        }
-
-	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
-	        {
-	            int ceiling = 0;
-	            int run = 0;
-	            for (int x = 0; x < width; x++)
-	            {
-	                if (run-- <= 0 && x > 4)
-	                {
-	                    ceiling = random.nextInt(4);
-	                    run = random.nextInt(4) + 4;
-	                }
-	                for (int y = 0; y < height; y++)
-	                {
-	                    if ((x > 4 && y <= ceiling) || x < 1)
-	                    {
-	                        setBlock(x, y, GROUND);
-	                    }
-	                }
-	            }
-	        }
-
-	        fixWalls();
-
+	        
 	    }
+
+
+
+
+
+
+
+
 
 
 	    private int buildJump(int xo, int maxLength)
