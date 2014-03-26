@@ -124,15 +124,6 @@ public class MyLevel extends Level{
 			return (GPM.CannonBallKilled / 1.5) / getKillCount();
 		}
 
-		/*public PlayerType getPlayerType() {
-			double coinThreshold;	// min percentage of coins to be considered "high"
-			double killThreshold;	// min percentage of kills to be considered "high"
-			double jumpThreshold;	// min number of aimless jumps to be considered "high"
-			double runThreshold;	// min percentage of running to be considered "high"
-
-
-		}*/
-
 		public double getCoinPercentage() {
 			return (double) (GPM.coinsCollected / GPM.totalCoins);
 		}
@@ -152,10 +143,6 @@ public class MyLevel extends Level{
 		public double getRunPercentage() {
 			return (double) (GPM.timeSpentRunning / GPM.completionTime);
 		}
-
-		/*public int getAimlessJumpCount() {
-			return GPM.aimlessJumps;
-		}*/
 
 
 
@@ -340,6 +327,50 @@ public class MyLevel extends Level{
     				setBlock(x, y, CANNON_FILL);
     			}
     		}
+	    }
+
+	    private void buildCoin(int x, int y) {
+	    	setBlock(x, y, Level.COIN);
+	    }
+
+	    private void buildCoins(int xi, int yi, int xf, int yf) {
+	    	// xi : left edge x-coordinate
+	    	// yi : top edge y-coordinate
+	    	// xf : right edge x-coordinate
+	    	// yf : bottom edge y-coordinate
+	    	for (int x = xi; x <= xf; x++) {
+	    		for (int y = yi; y <= yf; y++) {
+	    			buildCoin(x, y);
+	    		}
+	    	}
+	    }
+
+	    private void buildBlockEmpty(int x, int y) {
+	    	setBlock(x, y, Level.BLOCK_EMPTY);
+	    }
+
+	    private void buildBlockCoin(int x, int y) {
+	    	setBlock(x, y, Level.BLOCK_COIN);
+	    }
+
+	    private void buildBlockPower(int x, int y) {
+	    	setBlock(x, y, Level.BLOCK_POWERUP);
+	    }
+
+	    private void buildBlocksEmpty(int xi, int yi, int xf, int yf) {
+	    	// xi : left edge x-coordinate
+	    	// yi : top edge y-coordinate
+	    	// xf : right edge x-coordinate
+	    	// yf : bottom edge y-coordinate
+	    	for (int x = xi; x <= xf; x++) {
+	    		for (int y = yi; y <= yf; y++) {
+	    			buildBlockEmpty(x, y);
+	    		}
+	    	}
+	    }
+
+	    private void buildRock(int x, int y) {
+	    	setBlock(x, y, Level.ROCK);
 	    }
 
 
