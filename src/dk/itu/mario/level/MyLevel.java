@@ -185,7 +185,7 @@ public class MyLevel extends Level{
 
 			buildCompleteGround(4, 2, 12, 5);
 
-			buildHill(10, height-7, 20, height-2);
+			buildHill(9, height-7, 14, height-2);
 			buildPipe(10, height-4, height-2);
 			buildCannon(13, height-5, height-2);
 
