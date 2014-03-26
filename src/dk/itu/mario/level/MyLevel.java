@@ -177,7 +177,93 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	    	
+	        this.type = type;
+	        this.difficulty = difficulty;
+
+	        lastSeed = seed;
+	        random = new Random(seed);
+
+			buildCompleteGround(4, 5, 10, 10);	        
+
+	        //set the end piece
+	        int floor = height - 1 - random.nextInt(4);
+	        int length = width - 64;
+	        xExit = length + 8;
+	        yExit = floor;
+
+	        // fills the end piece
+	        for (int x = length; x < width; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                    setBlock(x, y, GROUND);
+	                }
+	            }
+	        }
+
+	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        {
+	            int ceiling = 0;
+	            int run = 0;
+	            for (int x = 0; x < width; x++)
+	            {
+	                if (run-- <= 0 && x > 4)
+	                {
+	                    ceiling = random.nextInt(4);
+	                    run = random.nextInt(4) + 4;
+	                }
+	                for (int y = 0; y < height; y++)
+	                {
+	                    if ((x > 4 && y <= ceiling) || x < 1)
+	                    {
+	                        setBlock(x, y, GROUND);
+	                    }
+	                }
+	            }
+	        }
+
+	        fixWalls();
+
+	    }
+
+	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
+	    	int maxElevation = height - 8;
+	    	int length = 0;
+
+	    	//starting position
+	        buildGround(0, 10, height -1);
+	        length += 10;
+	        
+	        int curElevation = height -1;
+	        while (length < width - 64)
+	        {
+	        	//make a gap
+	        	if (getBlock(length-1, height - 1) == 0 && random.nextInt(gapFrequency) == 0){
+	        		length += 2 + random.nextInt(4);
+	        	}
+
+	        	//create more ground
+	        	else{
+	        	int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch);
+	        	int elevationChange = random.nextInt(maxElevationChange);
+	        	//int elevationChange = maxElevationChange;
+	        	if (random.nextInt(2) == 0)
+	        		curElevation += elevationChange;
+	        	else curElevation -= elevationChange;
+
+	        	if (curElevation > height - 1) curElevation = height - 1;
+	        	else if (curElevation < maxElevation) curElevation = maxElevation;
+
+
+	        	buildGround(length, stretch, curElevation);
+
+				length += stretch;
+				}
+	        }
+	        
+
 	    }
 
 	    private void buildHill(int xi, int yf, int xf, int yi) {
@@ -205,6 +291,10 @@ public class MyLevel extends Level{
 	    			
 	    		}
 	    	}
+	    }
+
+	    private void buildHills(int maxElevationChange, int maxFlatStretch, int frequency){
+
 	    }
 
 
@@ -506,6 +596,26 @@ public class MyLevel extends Level{
 	            if (length > 5)
 	            {
 	                decorate(xo, xo + length, floor);
+	            }
+	        }
+
+	        return length;
+	    }
+
+	    private int buildGround(int xo, int length, int elevation)
+	    {
+
+	        int floor = elevation;
+
+	        //runs from the specified x position to the length of the segment
+	        for (int x = xo; x < xo + length; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                    setBlock(x, y, GROUND);
+	                }
 	            }
 	        }
 
