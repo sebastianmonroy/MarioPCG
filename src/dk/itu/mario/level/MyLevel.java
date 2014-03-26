@@ -187,6 +187,7 @@ public class MyLevel extends Level{
 
 			buildHill(10, height-7, 20, height-2);
 			buildPipe(10, height-4, height-2);
+			buildCannon(13, height-5, height-2);
 
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
@@ -268,6 +269,10 @@ public class MyLevel extends Level{
 	    }
 
 	    private void buildHill(int xi, int yi, int xf, int yf) {
+	    	// xi : left edge x-coordinate
+	    	// yi : top edge y-coordinate
+	    	// xf : right edge x-coordinate
+	    	// yf : bottom edge y-coordinate
 	    	for (int x = xi; x <= xf; x++) {
 	    		for (int y = yi; y <= yf; y++) {
 	    			if (x == xi && y == yi) {
@@ -298,6 +303,9 @@ public class MyLevel extends Level{
 	    }
 
 	    private void buildPipe(int xi, int yi, int yf) {
+	    	// xi : left edge x-coordinate
+	    	// yi : top edge y-coordinate
+	    	// yf : bottom edge y-coordinate
 	    	int xf = xi + 1;
 	    	for (int x = xi; x <= xf; x++) {
 	    		for (int y = yi; y <= yf; y++) {
@@ -312,6 +320,26 @@ public class MyLevel extends Level{
 	    			}
 	    		}
 	    	}
+	    }
+
+	    private void buildCannon(int xi, int yi, int yf) {
+	    	// xi : left edge x-coordinate
+	    	// yi : top edge y-coordinate
+	    	// yf : bottom edge y-coordinate
+	    	int x = xi;
+
+	    	byte CANNON_TOP = (byte) (14 + 0 * 16);
+	    	byte CANNON_BASE = (byte) (14 + 1 * 16);
+	    	byte CANNON_FILL = (byte) (14 + 2 * 16);
+    		for (int y = yi; y <= yf; y++) {
+    			if (y == yi) {
+    				setBlock(x, y, CANNON_TOP);
+    			} else if (y == yi+1) {
+    				setBlock(x, y, CANNON_BASE);
+    			} else {
+    				setBlock(x, y, CANNON_FILL);
+    			}
+    		}
 	    }
 
 
@@ -365,7 +393,7 @@ public class MyLevel extends Level{
 	        return length;
 	    }
 
-	    private void buildCannon(int xo, int floorHeight, int cannonHeight) {
+	    /*private void buildCannon(int xo, int floorHeight, int cannonHeight) {
 	    	if (height < 2)		height = 2;
 
 	    	int yo = floorHeight + cannonHeight - random.nextInt(cannonHeight);
@@ -425,7 +453,7 @@ public class MyLevel extends Level{
 	        }
 
 	        return length;
-	    }
+	    }*/
 
 	    private int buildHillStraight(int xo, int maxLength)
 	    {
