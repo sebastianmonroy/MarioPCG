@@ -183,7 +183,10 @@ public class MyLevel extends Level{
 	        lastSeed = seed;
 	        random = new Random(seed);
 
-			buildCompleteGround(4, 2, 12, 5);	        
+			buildCompleteGround(4, 2, 12, 5);
+
+			buildHill(10, height-7, 20, height-2);
+			buildPipe(10, height-4, height-2);
 
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
@@ -262,11 +265,9 @@ public class MyLevel extends Level{
 				length += stretch;
 				}
 	        }
-	        
-
 	    }
 
-	    private void buildHill(int xi, int yf, int xf, int yi) {
+	    private void buildHill(int xi, int yi, int xf, int yf) {
 	    	for (int x = xi; x <= xf; x++) {
 	    		for (int y = yi; y <= yf; y++) {
 	    			if (x == xi && y == yi) {
@@ -288,7 +289,6 @@ public class MyLevel extends Level{
 	    					setBlock(x, y, Level.HILL_FILL);
 	    				}
 	    			}
-	    			
 	    		}
 	    	}
 	    }
@@ -297,6 +297,22 @@ public class MyLevel extends Level{
 
 	    }
 
+	    private void buildPipe(int xi, int yi, int yf) {
+	    	int xf = xi + 1;
+	    	for (int x = xi; x <= xf; x++) {
+	    		for (int y = yi; y <= yf; y++) {
+	    			if (x == xi && y == yi) {
+	    				setBlock(x, y, Level.TUBE_TOP_LEFT);
+	    			} else if (x == xf && y == yi) {
+	    				setBlock(x, y, Level.TUBE_TOP_RIGHT);
+	    			} else if (x == xi) {
+	    				setBlock(x, y, Level.TUBE_SIDE_LEFT);
+	    			} else if (x == xf) {
+	    				setBlock(x, y, Level.TUBE_SIDE_RIGHT);
+	    			}
+	    		}
+	    	}
+	    }
 
 
 
