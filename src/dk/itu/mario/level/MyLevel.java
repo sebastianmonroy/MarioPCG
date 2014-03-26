@@ -177,8 +177,6 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	    	// DEVELOP2: HEADER CREAT
-
 	        this.type = type;
 	        this.difficulty = difficulty;
 
@@ -205,17 +203,28 @@ public class MyLevel extends Level{
 	            }
 	        }
 
-	       	// DEVELOP1: BETTER CREAT
+	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        {
+	            int ceiling = 0;
+	            int run = 0;
+	            for (int x = 0; x < width; x++)
+	            {
+	                if (run-- <= 0 && x > 4)
+	                {
+	                    ceiling = random.nextInt(4);
+	                    run = random.nextInt(4) + 4;
+	                }
+	                for (int y = 0; y < height; y++)
+	                {
+	                    if ((x > 4 && y <= ceiling) || x < 1)
+	                    {
+	                        setBlock(x, y, GROUND);
+	                    }
+	                }
+	            }
+	        }
 
 	        fixWalls();
-
-	    }
-
-	    private void DEVELOP2() {
-
-	    }
-	    
-	    private void DEVELOP1() {
 
 	    }
 
