@@ -183,25 +183,11 @@ public class MyLevel extends Level{
 	        lastSeed = seed;
 	        random = new Random(seed);
 
-	        //create the start location
-	        int length = 0;
-	        length += buildStraight(0, width, true);
-
-	        //create all of the medium sections
-	        while (length < width - 64)
-	        {
-	            //length += buildZone(length, width - length);
-				length += buildStraight(length, width-length, true);
-				length += buildStraight(length, width-length, true);
-				//length += buildHillStraight(length, width-length);
-				//length += buildJump(length, width-length);
-				//length += buildTubes(length, width-length);
-				//length += buildCannons(length, width-length);
-	        }
+			buildCompleteGround(4, 5, 10, 10);	        
 
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
-
+	        int length = width - 64;
 	        xExit = length + 8;
 	        yExit = floor;
 
@@ -242,7 +228,47 @@ public class MyLevel extends Level{
 
 	    }
 
+	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
+	    	int maxElevation = height - 8;
+	    	int length = 0;
 
+	    	//starting position
+	        buildGround(0, 10, height -1);
+	        length += 10;
+	        
+	        int curElevation = height -1;
+	        while (length < width - 64)
+	        {
+	        	//make a gap
+	        	if (getBlock(length-1, height - 1) == 0 && random.nextInt(gapFrequency) == 0){
+	        		length += 2 + random.nextInt(4);
+	        	}
+
+	        	//create more ground
+	        	else{
+	        	int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch);
+	        	int elevationChange = random.nextInt(maxElevationChange);
+	        	//int elevationChange = maxElevationChange;
+	        	if (random.nextInt(2) == 0)
+	        		curElevation += elevationChange;
+	        	else curElevation -= elevationChange;
+
+	        	if (curElevation > height - 1) curElevation = height - 1;
+	        	else if (curElevation < maxElevation) curElevation = maxElevation;
+
+
+	        	buildGround(length, stretch, curElevation);
+
+				length += stretch;
+				}
+	        }
+	        
+
+	    }
+
+	    private void buildHills(int maxElevationChange, int maxFlatStretch, int frequency){
+
+	    }
 
 
 
@@ -527,6 +553,26 @@ public class MyLevel extends Level{
 	            if (length > 5)
 	            {
 	                decorate(xo, xo + length, floor);
+	            }
+	        }
+
+	        return length;
+	    }
+
+	    private int buildGround(int xo, int length, int elevation)
+	    {
+
+	        int floor = elevation;
+
+	        //runs from the specified x position to the length of the segment
+	        for (int x = xo; x < xo + length; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                    setBlock(x, y, GROUND);
+	                }
 	            }
 	        }
 
