@@ -179,7 +179,7 @@ public class MyLevel extends Level{
 	    {
 	    	// MASTER
 
-	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        /*if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
 	        {
 	            int ceiling = 0;
 	            int run = 0;
@@ -198,10 +198,16 @@ public class MyLevel extends Level{
 	                    }
 	                }
 	            }
-	        }
+	        }*/
 
 	        fixWalls();
 
+	        // TEST CHANGES, IGNORE
+
+	    }
+
+	    private void TESTFUNCTION() {
+	    	// DO NOTHING, IGNORE
 	    }
 
 	    private void MASTER() {
