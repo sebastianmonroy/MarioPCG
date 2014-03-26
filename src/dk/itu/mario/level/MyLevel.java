@@ -177,9 +177,33 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	    	// MASTER
+	        this.type = type;
+	        this.difficulty = difficulty;
 
-	        /*if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        lastSeed = seed;
+	        random = new Random(seed);
+
+			buildCompleteGround(4, 2, 12, 5);	        
+
+	        //set the end piece
+	        int floor = height - 1 - random.nextInt(4);
+	        int length = width - 64;
+	        xExit = length + 8;
+	        yExit = floor;
+
+	        // fills the end piece
+	        for (int x = length; x < width; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                    setBlock(x, y, GROUND);
+	                }
+	            }
+	        }
+
+	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
 	        {
 	            int ceiling = 0;
 	            int run = 0;
@@ -198,20 +222,10 @@ public class MyLevel extends Level{
 	                    }
 	                }
 	            }
-	        }*/
+	        }
 
 	        fixWalls();
 
-	        // TEST CHANGES, IGNORE
-
-	    }
-
-	    private void TESTFUNCTION() {
-	    	// DO NOTHING, IGNORE
-	    }
-
-	    private void MASTER() {
-	    	// MASTER, IGNORE
 	    }
 
 	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
