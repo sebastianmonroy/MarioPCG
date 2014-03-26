@@ -183,7 +183,7 @@ public class MyLevel extends Level{
 	        lastSeed = seed;
 	        random = new Random(seed);
 
-			buildCompleteGround(4, 5, 10, 10);	        
+			buildCompleteGround(4, 2, 12, 5);	        
 
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
@@ -240,8 +240,8 @@ public class MyLevel extends Level{
 	        while (length < width - 64)
 	        {
 	        	//make a gap
-	        	if (getBlock(length-1, height - 1) == 0 && random.nextInt(gapFrequency) == 0){
-	        		length += 2 + random.nextInt(4);
+	        	if (getBlock(length-1, height - 1) != 0 && random.nextInt(gapFrequency) == 0){
+	        		length += 1 + random.nextInt(4);
 	        	}
 
 	        	//create more ground
@@ -249,7 +249,7 @@ public class MyLevel extends Level{
 	        	int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch);
 	        	int elevationChange = random.nextInt(maxElevationChange);
 	        	//int elevationChange = maxElevationChange;
-	        	if (random.nextInt(2) == 0)
+	        	if (random.nextInt(2) == 0 || curElevation < maxElevation + maxElevationChange)
 	        		curElevation += elevationChange;
 	        	else curElevation -= elevationChange;
 
