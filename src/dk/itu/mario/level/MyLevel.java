@@ -73,7 +73,7 @@ public class MyLevel extends Level{
 		public int getNumGapsToSpawn() {
 			int result;
 
-			//result = 
+			result = 0;
 
 			if (result < MIN_GAPS) {
 				result = MIN_GAPS;
@@ -153,14 +153,9 @@ public class MyLevel extends Level{
 			return (double) (GPM.timeSpentRunning / GPM.completionTime);
 		}
 
-		public int getAimlessJumpCount() {
+		/*public int getAimlessJumpCount() {
 			return GPM.aimlessJumps;
-		}
-
-
-
-
-
+		}*/
 
 
 
@@ -182,12 +177,70 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	        
+	        this.type = type;
+	        this.difficulty = difficulty;
+
+	        lastSeed = seed;
+	        random = new Random(seed);
+
+	        //create the start location
+	        int length = 0;
+	        length += buildStraight(0, width, true);
+
+	        //create all of the medium sections
+	        while (length < width - 64)
+	        {
+	            //length += buildZone(length, width - length);
+				length += buildStraight(length, width-length, true);
+				length += buildStraight(length, width-length, true);
+				//length += buildHillStraight(length, width-length);
+				//length += buildJump(length, width-length);
+				//length += buildTubes(length, width-length);
+				//length += buildCannons(length, width-length);
+	        }
+
+	        //set the end piece
+	        int floor = height - 1 - random.nextInt(4);
+
+	        xExit = length + 8;
+	        yExit = floor;
+
+	        // fills the end piece
+	        for (int x = length; x < width; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                    setBlock(x, y, GROUND);
+	                }
+	            }
+	        }
+
+	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        {
+	            int ceiling = 0;
+	            int run = 0;
+	            for (int x = 0; x < width; x++)
+	            {
+	                if (run-- <= 0 && x > 4)
+	                {
+	                    ceiling = random.nextInt(4);
+	                    run = random.nextInt(4) + 4;
+	                }
+	                for (int y = 0; y < height; y++)
+	                {
+	                    if ((x > 4 && y <= ceiling) || x < 1)
+	                    {
+	                        setBlock(x, y, GROUND);
+	                    }
+	                }
+	            }
+	        }
+
+	        fixWalls();
+
 	    }
-
-
-
-
 
 
 
