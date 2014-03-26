@@ -177,6 +177,8 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
+	    	// DEVELOP2: HEADER CREAT
+
 	        this.type = type;
 	        this.difficulty = difficulty;
 
@@ -225,6 +227,10 @@ public class MyLevel extends Level{
 	        }
 
 	        fixWalls();
+
+	    }
+
+	    private void DEVELOP2() {
 
 	    }
 
