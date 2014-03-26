@@ -172,8 +172,8 @@ public class MyLevel extends Level{
 
 			buildCompleteGround(4, 2, 12, 5);
 
-			buildHill(9, height-7, 14, height-2);
-			buildPipe(10, height-4, height-2);
+			//buildHill(9, height-7, 14, height-2);
+			buildPipe(10, height-4, height-2, true);
 			buildCannon(13, height-5, height-2);
 
 	        //set the end piece
@@ -289,10 +289,11 @@ public class MyLevel extends Level{
 
 	    }
 
-	    private void buildPipe(int xi, int yi, int yf) {
+	    private void buildPipe(int xi, int yi, int yf, boolean flower) {
 	    	// xi : left edge x-coordinate
 	    	// yi : top edge y-coordinate
 	    	// yf : bottom edge y-coordinate
+	    	// flower : spawn enemy flower in tube?
 	    	int xf = xi + 1;
 	    	for (int x = xi; x <= xf; x++) {
 	    		for (int y = yi; y <= yf; y++) {
@@ -306,6 +307,10 @@ public class MyLevel extends Level{
 	    				setBlock(x, y, Level.TUBE_SIDE_RIGHT);
 	    			}
 	    		}
+	    	}
+
+	    	if (flower) {
+	    		buildJumpFlower(xi, yi);
 	    	}
 	    }
 
@@ -373,6 +378,35 @@ public class MyLevel extends Level{
 	    	setBlock(x, y, Level.ROCK);
 	    }
 
+	    private void buildGoomba(int x, int y, boolean winged) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.GOOMPA, winged));
+	        ENEMIES++;
+	    }
+
+	    private void buildGreenTurtle(int x, int y, boolean winged) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.GREEN_TURTLE, winged));
+	        ENEMIES++;
+	    }
+
+	    private void buildRedTurtle(int x, int y, boolean winged) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.RED_TURTLE, winged));
+	        ENEMIES++;
+	    }
+
+	    private void buildArmoredTurtle(int x, int y, boolean winged) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.ARMORED_TURTLE, winged));
+	        ENEMIES++;
+	    }
+
+	    private void buildChompFlower(int x, int y) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.CHOMP_FLOWER, false));
+	        ENEMIES++;
+	    }
+
+	    private void buildJumpFlower(int x, int y) {
+	    	setSpriteTemplate(x, y, new SpriteTemplate(SpriteTemplate.JUMP_FLOWER, false));
+	        ENEMIES++;
+	    }
 
 
 	    private int buildJump(int xo, int maxLength)
@@ -440,8 +474,7 @@ public class MyLevel extends Level{
 			}
 	    }
 
-	    private int buildCannons(int xo, int maxLength)
-	    {
+	    private int buildCannons(int xo, int maxLength) {
 	        int length = random.nextInt(10) + 2;
 	        if (length > maxLength) length = maxLength;
 
@@ -486,7 +519,7 @@ public class MyLevel extends Level{
 	        return length;
 	    }*/
 
-	    private int buildHillStraight(int xo, int maxLength)
+	    /*private int buildHillStraight(int xo, int maxLength)
 	    {
 	        int length = random.nextInt(10) + 10;
 	        if (length > maxLength) length = maxLength;
@@ -569,8 +602,8 @@ public class MyLevel extends Level{
 	    {
 	        for (int x = x0; x < x1; x++)
 	        {
-	            if (random.nextInt(35) < difficulty + 1)
-	            {
+	            //if (random.nextInt(35) < difficulty + 1)
+	            //{
 	                int type = random.nextInt(4);
 
 	                if (difficulty < 1)
@@ -584,11 +617,11 @@ public class MyLevel extends Level{
 
 	                setSpriteTemplate(x, y, new SpriteTemplate(type, random.nextInt(35) < difficulty));
 	                ENEMIES++;
-	            }
+	            //}
 	        }
-	    }
+	    }*/
 
-	    private int buildTubes(int xo, int maxLength)
+	    /*private int buildTubes(int xo, int maxLength)
 	    {
 	        int length = random.nextInt(10) + 5;
 	        if (length > maxLength) length = maxLength;
@@ -675,7 +708,7 @@ public class MyLevel extends Level{
 	        }
 
 	        return length;
-	    }
+	    }*/
 
 	    private int buildGround(int xo, int length, int elevation)
 	    {
@@ -697,7 +730,7 @@ public class MyLevel extends Level{
 	        return length;
 	    }
 
-	    private void decorate(int xStart, int xLength, int floor)
+	    /*private void decorate(int xStart, int xLength, int floor)
 	    {
 	    	//if its at the very top, just return
 	        if (floor < 1)
@@ -766,7 +799,7 @@ public class MyLevel extends Level{
 	                }
 	            }
 	        }
-	    }
+	    }*/
 
 	    private void fixWalls()
 	    {
