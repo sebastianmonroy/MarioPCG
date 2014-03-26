@@ -177,72 +177,35 @@ public class MyLevel extends Level{
 
 	    public void creat(long seed, int difficulty, int type)
 	    {
-	        this.type = type;
-	        this.difficulty = difficulty;
-
-	        lastSeed = seed;
-	        random = new Random(seed);
-
-	        //create the start location
-	        int length = 0;
-	        length += buildStraight(0, width, true);
-
-	        //create all of the medium sections
-	        while (length < width - 64)
-	        {
-	            //length += buildZone(length, width - length);
-				length += buildStraight(length, width-length, true);
-				length += buildStraight(length, width-length, true);
-				//length += buildHillStraight(length, width-length);
-				//length += buildJump(length, width-length);
-				//length += buildTubes(length, width-length);
-				//length += buildCannons(length, width-length);
-	        }
-
-	        //set the end piece
-	        int floor = height - 1 - random.nextInt(4);
-
-	        xExit = length + 8;
-	        yExit = floor;
-
-	        // fills the end piece
-	        for (int x = length; x < width; x++)
-	        {
-	            for (int y = 0; y < height; y++)
-	            {
-	                if (y >= floor)
-	                {
-	                    setBlock(x, y, GROUND);
-	                }
-	            }
-	        }
-
-	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
-	        {
-	            int ceiling = 0;
-	            int run = 0;
-	            for (int x = 0; x < width; x++)
-	            {
-	                if (run-- <= 0 && x > 4)
-	                {
-	                    ceiling = random.nextInt(4);
-	                    run = random.nextInt(4) + 4;
-	                }
-	                for (int y = 0; y < height; y++)
-	                {
-	                    if ((x > 4 && y <= ceiling) || x < 1)
-	                    {
-	                        setBlock(x, y, GROUND);
-	                    }
-	                }
-	            }
-	        }
-
-	        fixWalls();
-
+	    	
 	    }
 
-
+	    private void buildHill(int xi, int yf, int xf, int yi) {
+	    	for (int x = xi; x <= xf; x++) {
+	    		for (int y = yi; y <= yf; y++) {
+	    			if (x == xi && y == yi) {
+	    				setBlock(x, y, Level.HILL_TOP_LEFT);
+	    			} else if (x == xf && y == yi) {
+	    				setBlock(x, y, Level.HILL_TOP_RIGHT);
+	    			} else if (x == xi) {
+	    				setBlock(x, y, Level.HILL_LEFT);
+	    			} else if (x == xf) {
+	    				setBlock(x, y, Level.HILL_RIGHT);
+	    			} else if (y == yi) {
+	    				setBlock(x, y, Level.HILL_TOP);
+	    			} else {
+						if (getBlock(x, y) == Level.HILL_TOP_LEFT) {
+							setBlock(x, y, Level.HILL_TOP_LEFT_IN);
+						} else if (getBlock(x, y) == Level.HILL_TOP_RIGHT) {
+							setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
+						} else {
+	    					setBlock(x, y, Level.HILL_FILL);
+	    				}
+	    			}
+	    			
+	    		}
+	    	}
+	    }
 
 
 
@@ -294,6 +257,22 @@ public class MyLevel extends Level{
 	        }
 
 	        return length;
+	    }
+
+	    private void buildCannon(int xo, int floorHeight, int cannonHeight) {
+	    	if (height < 2)		height = 2;
+
+	    	int yo = floorHeight + cannonHeight - random.nextInt(cannonHeight);
+
+	    	for (int y = yo; y <= yo + cannonHeight; y++) {
+	    		if (y == cannonHeight) {
+                    setBlock(xo, y, (byte) (14 + 0 * 16));
+                } else if (y == cannonHeight + 1) {
+                    setBlock(xo, y, (byte) (14 + 1 * 16));
+                } else {
+					setBlock(xo, y, (byte) (14 + 2 * 16));
+				}	
+			}
 	    }
 
 	    private int buildCannons(int xo, int maxLength)
