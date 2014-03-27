@@ -170,17 +170,22 @@ public class MyLevel extends Level{
 	        lastSeed = seed;
 	        random = new Random(seed);
 
-			buildCompleteGround(4, 2, 12, 5);
+
+	        
+			//buildCompleteGround(4, 2, 12, 5);
 
 			//buildHill(9, height-7, 14, height-2);
-			buildPipe(10, height-4, height-2, true);
-			buildCannon(13, height-5, height-2);
+			//buildPipe(10, height-4, height-2, true);
+			//buildCannon(13, height-5, height-2);
 
 	        //set the end piece
-	        int floor = height - 1 - random.nextInt(4);
-	        int length = width - 64;
+	        int floor = height - 1;// - random.nextInt(4);
+	        int length = 15;//width - 64;
 	        xExit = length + 8;
 	        yExit = floor;
+
+	        buildGround(0, length, height-1);
+	        buildHill(3, height-4, 10, height-2);
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
@@ -262,25 +267,27 @@ public class MyLevel extends Level{
 	    	// yf : bottom edge y-coordinate
 	    	for (int x = xi; x <= xf; x++) {
 	    		for (int y = yi; y <= yf; y++) {
-	    			if (x == xi && y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP_LEFT);
-	    			} else if (x == xf && y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP_RIGHT);
-	    			} else if (x == xi) {
-	    				setBlock(x, y, Level.HILL_LEFT);
-	    			} else if (x == xf) {
-	    				setBlock(x, y, Level.HILL_RIGHT);
-	    			} else if (y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP);
-	    			} else {
-						if (getBlock(x, y) == Level.HILL_TOP_LEFT) {
-							setBlock(x, y, Level.HILL_TOP_LEFT_IN);
-						} else if (getBlock(x, y) == Level.HILL_TOP_RIGHT) {
-							setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
-						} else {
-	    					setBlock(x, y, Level.HILL_FILL);
-	    				}
-	    			}
+	    			if (getBlock(x, y) == Level.BLOCK_EMPTY || getBlock(x,y) == 0 || getBlock(x,y) == Level.HILL_TOP_LEFT || getBlock(x,y) == Level.HILL_TOP_RIGHT) {
+		    			if (x == xi && y == yi) {
+		    				setBlock(x, y, Level.HILL_TOP_LEFT);
+		    			} else if (x == xf && y == yi) {
+		    				setBlock(x, y, Level.HILL_TOP_RIGHT);
+		    			} else if (x == xi) {
+		    				setBlock(x, y, Level.HILL_LEFT);
+		    			} else if (x == xf) {
+		    				setBlock(x, y, Level.HILL_RIGHT);
+		    			} else if (y == yi) {
+		    				setBlock(x, y, Level.HILL_TOP);
+		    			} else {
+							if (getBlock(x, y) == Level.HILL_TOP_LEFT) {
+								setBlock(x, y, Level.HILL_TOP_LEFT_IN);
+							} else if (getBlock(x, y) == Level.HILL_TOP_RIGHT) {
+								setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
+							} else {
+		    					setBlock(x, y, Level.HILL_FILL);
+		    				}
+		    			}
+		    		}
 	    		}
 	    	}
 	    }
