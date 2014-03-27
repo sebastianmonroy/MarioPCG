@@ -155,6 +155,11 @@ public class MyLevel extends Level{
 	    {
 			super(width, height);
 			elevMap = new int[4][width];
+			for (int i = 0; i < 4; i++){
+				for (int j = 0; j< width; j++){
+					elevMap[i][j] = height;
+				}
+			}
 	    }
 
 
@@ -174,7 +179,7 @@ public class MyLevel extends Level{
 	        random = new Random(seed);
 
 			buildCompleteGround(4, 2, 12, 5);
-			buildHill(15, elevMap[0][15]-4, 16, elevMap[0][15]-1);
+			buildHills(1, 5 , 1 , 4 , 2);
 
 			//buildHill(9, height-7, 14, height-2);
 			//buildPipe(10, height-4, height-2, true);
@@ -259,39 +264,74 @@ public class MyLevel extends Level{
 	        }
 	    }
 
+	    private void buildHills(int passNo, int maxElevationChange, int minFlatStretch, int maxFlatStretch, int frequency){
+	    	int length = 10;
+
+	        
+	        while (length < width - 64)
+	        {
+	        	//make a hill
+	        	
+	        		
+	       		int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
+	       		int elevationChange = 1 + random.nextInt(maxElevationChange - 1);
+        		int localMaxElevation = height;
+
+				for (int x = length; x < length + stretch; x++){
+					if (elevMap[passNo - 1][x] < localMaxElevation)
+						localMaxElevation = elevMap[passNo - 1][x];
+				}
+					
+				if (random.nextInt(frequency) == 0){
+	        		buildHill(length, localMaxElevation - elevationChange, length + stretch, height);
+	        		for (int i = passNo; i < 4; i++){
+	        			for (int x = length; x < length + stretch; x++){
+							elevMap[i][x] = localMaxElevation - elevationChange;
+						}
+					}
+				}
+
+				length += stretch + 2;
+				
+	        }
+	    
+	    }
+
 	    private void buildHill(int xi, int yi, int xf, int yf) {
-	    	// xi : left edge x-coordinate
-	    	// yi : top edge y-coordinate
-	    	// xf : right edge x-coordinate
-	    	// yf : bottom edge y-coordinate
-	    	for (int x = xi; x <= xf; x++) {
-	    		for (int y = yi; y <= yf; y++) {
-	    			if (x == xi && y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP_LEFT);
-	    			} else if (x == xf && y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP_RIGHT);
-	    			} else if (x == xi) {
-	    				setBlock(x, y, Level.HILL_LEFT);
-	    			} else if (x == xf) {
-	    				setBlock(x, y, Level.HILL_RIGHT);
-	    			} else if (y == yi) {
-	    				setBlock(x, y, Level.HILL_TOP);
-	    			} else {
-						if (getBlock(x, y) == Level.HILL_TOP_LEFT) {
-							setBlock(x, y, Level.HILL_TOP_LEFT_IN);
-						} else if (getBlock(x, y) == Level.HILL_TOP_RIGHT) {
-							setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
+			// xi : left edge x-coordinate
+			// yi : top edge y-coordinate
+			// xf : right edge x-coordinate
+			// yf : bottom edge y-coordinate
+			for (int x = xi; x <= xf; x++) {
+				for (int y = yi; y <= yf; y++) {
+					if (getBlock(x, y) == Level.BLOCK_EMPTY || getBlock(x,y) == 0) {
+						if (x == xi && y == yi) {
+							setBlock(x, y, Level.HILL_TOP_LEFT);
+						} else if (x == xf && y == yi) {
+							setBlock(x, y, Level.HILL_TOP_RIGHT);
+						} else if (x == xi) {
+							setBlock(x, y, Level.HILL_LEFT);
+						} else if (x == xf) {
+							setBlock(x, y, Level.HILL_RIGHT);
+						} else if (y == yi) {
+							setBlock(x, y, Level.HILL_TOP);
 						} else {
-	    					setBlock(x, y, Level.HILL_FILL);
-	    				}
-	    			}
-	    		}
-	    	}
-	    }
+							setBlock(x, y, Level.HILL_FILL);
+						}
+					} else if (getBlock(x,y) == Level.HILL_TOP_LEFT) {
+						setBlock(x, y, Level.HILL_TOP_LEFT_IN);
+					} else if (getBlock(x,y) == Level.HILL_TOP_RIGHT) {
+						setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
+					}
+				}
+			}
+		}
 
-	    private void buildHills(int maxElevationChange, int maxFlatStretch, int frequency){
+		private void buildHill(int xi, int yi, int xf) {
+			this.buildHill(xi, yi, xf, height-2);
+		}
 
-	    }
+
 
 	    private void buildPipe(int xi, int yi, int yf, boolean flower) {
 	    	// xi : left edge x-coordinate
