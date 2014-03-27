@@ -41,7 +41,7 @@ public class MyLevel extends Level{
 		private int MIN_COMPLETION_TIME = 200-173;
 		private int MAX_COMPLETION_TIME = 200;
 		private GamePlay GPM;
-		private int[][] heightmap;
+		private int[][] elevMap;
 
 
 		public int getNumEnemiesToSpawn() {
@@ -189,68 +189,46 @@ public class MyLevel extends Level{
 	        // ground
 	        buildGround(0, 6, height-1);
 	        buildGround(8, length, height-1);
-	        // first pass hills
+	        /*// first pass hills
 	        buildHill(3, height-3, 8);
 	        buildHill(10, height-4, 14);
 	        // second pass
 	        buildHill(6, height-7, 12);
 	        // third pass
 	        buildHill(9, height-11, 11);
-	        buildHill(14, height-10, 15);
+	        buildHill(14, height-10, 15);*/
 
-	        heightmap = new int[length+1][4];
+	        elevMap = new int[length+1][4];
 
-	        for (int x = 0; x <= 6; x++) {
-	        	heightmap[x][0] = height-1;
+	        for (int x = 0; x <= 5; x++) {
+	        	elevMap[x][0] = height-1;
 	        }
 
 	        for (int x = 8; x <= length; x++) {
-	        	heightmap[x][0] = height-1;
+	        	elevMap[x][0] = height-1;
 	        }
 
-	        for (int x = 3; x <= 8; x++) {
-	        	heightmap[x][1] = height-3;
+	        /*for (int x = 3; x <= 8; x++) {
+	        	elevMap[x][1] = height-3;
 	        }
 
-	        for (int x = 3; x <= 8; x++) {
-	        	heightmap[x][1] = height-3;
+	        for (int x = 10; x <= 14; x++) {
+	        	elevMap[x][1] = height-4;
 	        }
 
-	        for (int x = 5; x <= 12; x++) {
-	        	heightmap[x][2] = height-7;
+	        for (int x = 6; x <= 12; x++) {
+	        	elevMap[x][2] = height-7;
 	        }
 
 	        for (int x = 9; x <= 11; x++) {
-	        	heightmap[x][3] = height-11;
+	        	elevMap[x][3] = height-11;
 	        }
 
 	        for (int x = 14; x <= 15; x++) {
-	        	heightmap[x][3] = height-10;
-	        }
+	        	elevMap[x][3] = height-10;
+	        }*/
 
-	        List<int[]> possibleLocations = new ArrayList<int[]>();
-	        for (int x = 0; x < length; x++) {
-	        	for (int j = 0; j < 4; j++) {
-	        		int y = heightmap[x][j];
-	        		if (y > 0) {
-	        			for (int k = 2; k <= 4; k++) {
-	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
-	        					int[] loc = {x, y-k};
-	        					possibleLocations.add(loc);
-	        				}
-	        			}
-	        		}
-	        	}
-	        }
-
-	    	int coinsLeft = MIN_COINS;
-	        while (possibleLocations.size() > 0 && coinsLeft > 0) {
-	        	int i = random.nextInt(possibleLocations.size());
-	        	int[] loc = possibleLocations.get(i);
-	        	buildCoin(loc[0], loc[1]);
-	        	possibleLocations.remove(i);
-	        	coinsLeft--;
-	        }
+	        buildCoins(100);
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
@@ -287,6 +265,40 @@ public class MyLevel extends Level{
 
 	        fixWalls();
 
+	    }
+
+	    private void buildCoins(int numCoinsToSpawn) {
+	    	// create list of all possible locations for a coin to be spawned
+	    	List<int[]> possibleLocations = new ArrayList<int[]>();
+	        for (int x = 1; x < elevMap.length; x++) {
+	        	for (int j = 0; j < elevMap[0].length; j++) {
+	        		int y = elevMap[x][j];
+	        		if (y > 0) {
+	        			for (int k = 2; k <= 5; k++) {
+	        				if (y - k < 0 || getBlock(x, y-k) == Level.HILL_FILL || getBlock(x, y-k) == Level.HILL_LEFT || getBlock(x, y-k) == Level.HILL_RIGHT || getBlock(x, y-k) == Level.HILL_TOP_LEFT || getBlock(x, y-k) == Level.HILL_TOP_RIGHT || getBlock(x, y-k) == Level.HILL_TOP) {
+	        					// don't bother searching for more possible locations if you find a hill above this platform
+	        					break;
+	        				}
+
+	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
+	        					int[] loc = {x, y-k};
+	        					possibleLocations.add(loc);
+	        				}
+	        			}
+	        		}
+	        	}
+	        }
+
+
+	        // randomly select possible spawn locations from the list, spawn the coins, remove the used spawn locations from the list
+	        int coinsLeft = numCoinsToSpawn;
+	        while (possibleLocations.size() > 0 && coinsLeft > 0) {
+	        	int i = random.nextInt(possibleLocations.size());
+	        	int[] loc = possibleLocations.get(i);
+	        	buildCoin(loc[0], loc[1]);
+	        	possibleLocations.remove(i);
+	        	coinsLeft--;
+	        }
 	    }
 
 	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
