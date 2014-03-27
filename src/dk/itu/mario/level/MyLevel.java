@@ -185,7 +185,12 @@ public class MyLevel extends Level{
 	        yExit = floor;
 
 	        buildGround(0, length, height-1);
-	        buildHill(3, height-4, 10, height-2);
+	        buildHill(3, height-3, 8);
+	        buildHill(10, height-4, 14);
+	        buildHill(6, height-7, 12);
+	        buildHill(9, height-11, 11);
+	        buildHill(14, height-10, 15);
+
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
@@ -260,37 +265,39 @@ public class MyLevel extends Level{
 	        }
 	    }
 
-	    private void buildHill(int xi, int yi, int xf, int yf) {
-	    	// xi : left edge x-coordinate
-	    	// yi : top edge y-coordinate
-	    	// xf : right edge x-coordinate
-	    	// yf : bottom edge y-coordinate
-	    	for (int x = xi; x <= xf; x++) {
-	    		for (int y = yi; y <= yf; y++) {
-	    			if (getBlock(x, y) == Level.BLOCK_EMPTY || getBlock(x,y) == 0 || getBlock(x,y) == Level.HILL_TOP_LEFT || getBlock(x,y) == Level.HILL_TOP_RIGHT) {
-		    			if (x == xi && y == yi) {
-		    				setBlock(x, y, Level.HILL_TOP_LEFT);
-		    			} else if (x == xf && y == yi) {
-		    				setBlock(x, y, Level.HILL_TOP_RIGHT);
-		    			} else if (x == xi) {
-		    				setBlock(x, y, Level.HILL_LEFT);
-		    			} else if (x == xf) {
-		    				setBlock(x, y, Level.HILL_RIGHT);
-		    			} else if (y == yi) {
-		    				setBlock(x, y, Level.HILL_TOP);
-		    			} else {
-							if (getBlock(x, y) == Level.HILL_TOP_LEFT) {
-								setBlock(x, y, Level.HILL_TOP_LEFT_IN);
-							} else if (getBlock(x, y) == Level.HILL_TOP_RIGHT) {
-								setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
-							} else {
-		    					setBlock(x, y, Level.HILL_FILL);
-		    				}
-		    			}
-		    		}
-	    		}
-	    	}
-	    }
+		private void buildHill(int xi, int yi, int xf, int yf) {
+			// xi : left edge x-coordinate
+			// yi : top edge y-coordinate
+			// xf : right edge x-coordinate
+			// yf : bottom edge y-coordinate
+			for (int x = xi; x <= xf; x++) {
+				for (int y = yi; y <= yf; y++) {
+					if (getBlock(x, y) == Level.BLOCK_EMPTY || getBlock(x,y) == 0) {
+						if (x == xi && y == yi) {
+							setBlock(x, y, Level.HILL_TOP_LEFT);
+						} else if (x == xf && y == yi) {
+							setBlock(x, y, Level.HILL_TOP_RIGHT);
+						} else if (x == xi) {
+							setBlock(x, y, Level.HILL_LEFT);
+						} else if (x == xf) {
+							setBlock(x, y, Level.HILL_RIGHT);
+						} else if (y == yi) {
+							setBlock(x, y, Level.HILL_TOP);
+						} else {
+							setBlock(x, y, Level.HILL_FILL);
+						}
+					} else if (getBlock(x,y) == Level.HILL_TOP_LEFT) {
+						setBlock(x, y, Level.HILL_TOP_LEFT_IN);
+					} else if (getBlock(x,y) == Level.HILL_TOP_RIGHT) {
+						setBlock(x, y, Level.HILL_TOP_RIGHT_IN);
+					}
+				}
+			}
+		}
+
+		private void buildHill(int xi, int yi, int xf) {
+			this.buildHill(xi, yi, xf, height-2);
+		}
 
 	    private void buildHills(int maxElevationChange, int maxFlatStretch, int frequency){
 
