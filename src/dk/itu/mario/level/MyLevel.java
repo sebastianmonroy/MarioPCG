@@ -40,6 +40,7 @@ public class MyLevel extends Level{
 		private int MIN_COMPLETION_TIME = 200-173;
 		private int MAX_COMPLETION_TIME = 200;
 		private GamePlay GPM;
+		private int[][] heightmap;
 
 
 		public int getNumEnemiesToSpawn() {
@@ -184,12 +185,48 @@ public class MyLevel extends Level{
 	        xExit = length + 8;
 	        yExit = floor;
 
-	        buildGround(0, length, height-1);
+	        // ground
+	        buildGround(0, 6, height-1);
+	        buildGround(8, length, height-1);
+	        // first pass hills
 	        buildHill(3, height-3, 8);
 	        buildHill(10, height-4, 14);
+	        // second pass
 	        buildHill(6, height-7, 12);
+	        // third pass
 	        buildHill(9, height-11, 11);
 	        buildHill(14, height-10, 15);
+
+	        heightmap = new int[length+1][4];
+
+	        for (int x = 0; x <= 6; x++) {
+	        	heightmap[x][0] = height-1;
+	        }
+
+	        for (int x = 8; x <= length; x++) {
+	        	heightmap[x][0] = height-1;
+	        }
+
+	        for (int x = 3; x <= 8; x++) {
+	        	heightmap[x][1] = height-3;
+	        }
+
+	        for (int x = 3; x <= 8; x++) {
+	        	heightmap[x][1] = height-3;
+	        }
+
+	        for (int x = 5; x <= 12; x++) {
+	        	heightmap[x][2] = height-7;
+	        }
+
+	        for (int x = 9; x <= 11; x++) {
+	        	heightmap[x][3] = height-11;
+	        }
+
+	        for (int x = 14; x <= 15; x++) {
+	        	heightmap[x][3] = height-10;
+	        }
+
 
 
 	        // fills the end piece
@@ -296,7 +333,7 @@ public class MyLevel extends Level{
 		}
 
 		private void buildHill(int xi, int yi, int xf) {
-			this.buildHill(xi, yi, xf, height-2);
+			this.buildHill(xi, yi, xf, height-1);
 		}
 
 	    private void buildHills(int maxElevationChange, int maxFlatStretch, int frequency){
