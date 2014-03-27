@@ -215,3 +215,5 @@ pip-log.txt
 .mr.developer.cfg
 
 bin/dk/itu/mario/level/MyLevel.class
+DetailedInfo.txt
+player.txt

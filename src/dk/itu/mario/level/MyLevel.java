@@ -1,5 +1,6 @@
 package dk.itu.mario.level;
 
+import java.util.*;
 import java.util.Random;
 
 import dk.itu.mario.MarioInterface.Constraints;
@@ -40,8 +41,8 @@ public class MyLevel extends Level{
 		private int MIN_COMPLETION_TIME = 200-173;
 		private int MAX_COMPLETION_TIME = 200;
 		private GamePlay GPM;
+		private int[][] elevMap;
 
-		public int[][] elevMap;
 
 
 		public int getNumEnemiesToSpawn() {
@@ -185,15 +186,13 @@ public class MyLevel extends Level{
 			buildHills(3, 5 , 2 , 10 , 2);
 
 
-			//buildHill(9, height-7, 14, height-2);
-			//buildPipe(10, height-4, height-2, true);
-			//buildCannon(13, height-5, height-2);
-
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
 	        int length = width - 64;
 	        xExit = length + 8;
 	        yExit = floor;
+
+	        
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
@@ -207,6 +206,14 @@ public class MyLevel extends Level{
 	                }
 	            }
 	        }
+	        for (int t = 0; t< width; t++){
+	        System.out.print(elevMap[0][t] + ", ");
+	        }
+	        System.out.println();
+	        for (int t = 0; t< width; t++){
+		        System.out.print(elevMap[1][t] + ", ");
+		    }
+
 
 	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
 	        {
@@ -231,6 +238,43 @@ public class MyLevel extends Level{
 
 	        fixWalls();
 
+	    }
+
+	    private void buildCoins(int numCoinsToSpawn) {
+	    	// create list of all possible locations for a coin to be spawned
+	    	List<int[]> possibleLocations = new ArrayList<int[]>();
+	        for (int x = 1; x < elevMap.length; x++) {
+	        	for (int j = 0; j < elevMap[0].length; j++) {
+	        		int y = elevMap[x][j];
+	        		if (y > 0) {
+	        			for (int k = 2; k <= 5; k++) {
+	        				if (y - k < 0 || getBlock(x, y-k) == Level.HILL_FILL || getBlock(x, y-k) == Level.HILL_LEFT || getBlock(x, y-k) == Level.HILL_RIGHT || getBlock(x, y-k) == Level.HILL_TOP_LEFT || getBlock(x, y-k) == Level.HILL_TOP_RIGHT || getBlock(x, y-k) == Level.HILL_TOP) {
+	        					// don't bother searching for more possible locations if you find a hill above this platform
+	        					break;
+	        				}
+
+
+	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
+	        					// potential coin location found! add to list.
+	        					int[] loc = {x, y-k};
+	        					possibleLocations.add(loc);
+	        				}
+	        			}
+	        		}
+	        	}
+	        }
+
+
+	        // randomly select possible spawn locations from the list, spawn the coins, remove the used spawn locations from the list
+	        int coinsLeft = numCoinsToSpawn;
+	        while (possibleLocations.size() > 0 && coinsLeft > 0) {
+	        	int i = random.nextInt(possibleLocations.size());
+	        	int[] loc = possibleLocations.get(i);
+	        	buildCoin(loc[0], loc[1]);
+
+	        	possibleLocations.remove(i);
+	        	coinsLeft--;
+	        }
 	    }
 
 	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
@@ -263,9 +307,11 @@ public class MyLevel extends Level{
 
 
 	        	buildGround(length, stretch, curElevation);
+	        	for (int t = 0; t<4; t++){
 	        	for (int x = length; x < length + stretch; x++){
-							elevMap[0][x] = curElevation;
+							elevMap[t][x] = curElevation;
 						}
+	        	}
 
 				length += stretch;
 				}
@@ -282,7 +328,7 @@ public class MyLevel extends Level{
 	        	
 	        		
 	       		int stretch  =  minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
-	       		int elevationChange = 2;//2 + random.nextInt(maxElevationChange - 2);
+	       		int elevationChange = 2 + random.nextInt(maxElevationChange - 2);
         		int localMaxElevation = height;
 
 				for (int x = length; x < length + stretch; x++){
@@ -305,7 +351,8 @@ public class MyLevel extends Level{
 	    
 	    }
 
-	    private void buildHill(int xi, int yi, int xf, int yf) {
+
+		private void buildHill(int xi, int yi, int xf, int yf) {
 			// xi : left edge x-coordinate
 			// yi : top edge y-coordinate
 			// xf : right edge x-coordinate
@@ -336,7 +383,8 @@ public class MyLevel extends Level{
 		}
 
 		private void buildHill(int xi, int yi, int xf) {
-			this.buildHill(xi, yi, xf, height-2);
+
+			this.buildHill(xi, yi, xf, height-1);
 		}
 
 
