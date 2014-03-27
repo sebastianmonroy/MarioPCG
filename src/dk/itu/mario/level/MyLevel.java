@@ -41,6 +41,8 @@ public class MyLevel extends Level{
 		private int MAX_COMPLETION_TIME = 200;
 		private GamePlay GPM;
 
+		public int[][] elevMap;
+
 
 		public int getNumEnemiesToSpawn() {
 			int result;
@@ -152,6 +154,7 @@ public class MyLevel extends Level{
 		public MyLevel(int width, int height)
 	    {
 			super(width, height);
+			elevMap = new int[4][width];
 	    }
 
 
@@ -171,10 +174,11 @@ public class MyLevel extends Level{
 	        random = new Random(seed);
 
 			buildCompleteGround(4, 2, 12, 5);
+			buildHill(15, elevMap[0][15]-4, 16, elevMap[0][15]-1);
 
 			//buildHill(9, height-7, 14, height-2);
-			buildPipe(10, height-4, height-2, true);
-			buildCannon(13, height-5, height-2);
+			//buildPipe(10, height-4, height-2, true);
+			//buildCannon(13, height-5, height-2);
 
 	        //set the end piece
 	        int floor = height - 1 - random.nextInt(4);
@@ -723,6 +727,7 @@ public class MyLevel extends Level{
 	                if (y >= floor)
 	                {
 	                    setBlock(x, y, GROUND);
+	                    elevMap[0][x] = elevation;
 	                }
 	            }
 	        }
