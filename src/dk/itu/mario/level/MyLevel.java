@@ -148,10 +148,6 @@ public class MyLevel extends Level{
 		}
 
 
-
-
-
-
 		public MyLevel(int width, int height)
 	    {
 			super(width, height);
@@ -184,6 +180,8 @@ public class MyLevel extends Level{
 			buildHills(1, 5 , 2 , 10 , 2);
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);
+			
+			buildCoins(10000);
 
 
 	        //set the end piece
@@ -192,7 +190,6 @@ public class MyLevel extends Level{
 	        xExit = length + 8;
 	        yExit = floor;
 
-	        
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
@@ -206,13 +203,7 @@ public class MyLevel extends Level{
 	                }
 	            }
 	        }
-	        for (int t = 0; t< width; t++){
-	        System.out.print(elevMap[0][t] + ", ");
-	        }
-	        System.out.println();
-	        for (int t = 0; t< width; t++){
-		        System.out.print(elevMap[1][t] + ", ");
-		    }
+	        
 
 
 	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
@@ -243,9 +234,9 @@ public class MyLevel extends Level{
 	    private void buildCoins(int numCoinsToSpawn) {
 	    	// create list of all possible locations for a coin to be spawned
 	    	List<int[]> possibleLocations = new ArrayList<int[]>();
-	        for (int x = 1; x < elevMap.length; x++) {
-	        	for (int j = 0; j < elevMap[0].length; j++) {
-	        		int y = elevMap[x][j];
+	        for (int x = 1; x < elevMap[0].length; x++) {
+	        	for (int j = 0; j < elevMap.length; j++) {
+	        		int y = elevMap[j][x];
 	        		if (y > 0) {
 	        			for (int k = 2; k <= 5; k++) {
 	        				if (y - k < 0 || getBlock(x, y-k) == Level.HILL_FILL || getBlock(x, y-k) == Level.HILL_LEFT || getBlock(x, y-k) == Level.HILL_RIGHT || getBlock(x, y-k) == Level.HILL_TOP_LEFT || getBlock(x, y-k) == Level.HILL_TOP_RIGHT || getBlock(x, y-k) == Level.HILL_TOP) {
@@ -253,11 +244,11 @@ public class MyLevel extends Level{
 	        					break;
 	        				}
 
-
 	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
 	        					// potential coin location found! add to list.
 	        					int[] loc = {x, y-k};
 	        					possibleLocations.add(loc);
+	        					System.out.println(x);
 	        				}
 	        			}
 	        		}
