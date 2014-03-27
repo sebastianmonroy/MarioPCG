@@ -280,7 +280,9 @@ public class MyLevel extends Level{
 	        					break;
 	        				}
 
+
 	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
+	        					// potential coin location found! add to list.
 	        					int[] loc = {x, y-k};
 	        					possibleLocations.add(loc);
 	        				}
@@ -296,6 +298,7 @@ public class MyLevel extends Level{
 	        	int i = random.nextInt(possibleLocations.size());
 	        	int[] loc = possibleLocations.get(i);
 	        	buildCoin(loc[0], loc[1]);
+
 	        	possibleLocations.remove(i);
 	        	coinsLeft--;
 	        }
