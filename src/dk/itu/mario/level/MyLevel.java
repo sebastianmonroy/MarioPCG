@@ -493,9 +493,9 @@ public class MyLevel extends Level{
 			while (length < width - 64)
 			{
 				//make a hill
-				System.out.println(maxFlatStretch - minFlatStretch + 1);
+				//System.out.println(maxFlatStretch - minFlatStretch + 1);
 		   		int stretch  =  minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
-		   		System.out.println(maxElevationChange + 1);
+		   		//System.out.println(maxElevationChange + 1);
 		   		int elevationChange = 2 + random.nextInt(maxElevationChange + 1);
 				int localMaxElevation = height;
 
