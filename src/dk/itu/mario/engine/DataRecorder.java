@@ -798,6 +798,7 @@ public class DataRecorder {
 		gpm.timeRunningRight = getTotalRightTime();
 		gpm.timeRunningLeft =  getTotalLeftTime();
 		gpm.coinsCollected =  getCoinsCollected();
+		System.out.println("Coins Collected: " + gpm.coinsCollected);
 		gpm.totalCoins = level.COINS;
 		gpm.emptyBlocksDestroyed = getBlocksEmptyDestroyed();
 		gpm.totalEmptyBlocks = level.BLOCKS_EMPTY;

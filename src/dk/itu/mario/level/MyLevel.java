@@ -179,9 +179,10 @@ public class MyLevel extends Level{
 	        random = new Random(seed);
 
 			buildCompleteGround(4, 2, 12, 5);
-			buildHills(1, 5 , 1 , 10 , 2);
-			buildHills(2, 5 , 1 , 10 , 2);
-			buildHills(3, 5 , 1 , 10 , 2);
+			//buildHill(0,height-7, 0, height-1);
+			buildHills(1, 5 , 2 , 10 , 2);
+			buildHills(2, 5 , 2 , 10 , 2);
+			buildHills(3, 5 , 2 , 10 , 2);
 
 
 			//buildHill(9, height-7, 14, height-2);
@@ -201,6 +202,7 @@ public class MyLevel extends Level{
 	            {
 	                if (y >= floor)
 	                {
+	                	elevMap[0][x] = floor;
 	                    setBlock(x, y, GROUND);
 	                }
 	            }
@@ -261,6 +263,9 @@ public class MyLevel extends Level{
 
 
 	        	buildGround(length, stretch, curElevation);
+	        	for (int x = length; x < length + stretch; x++){
+							elevMap[0][x] = curElevation;
+						}
 
 				length += stretch;
 				}
@@ -276,7 +281,7 @@ public class MyLevel extends Level{
 	        	//make a hill
 	        	
 	        		
-	       		int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
+	       		int stretch  =  minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
 	       		int elevationChange = 2;//2 + random.nextInt(maxElevationChange - 2);
         		int localMaxElevation = height;
 
@@ -285,8 +290,8 @@ public class MyLevel extends Level{
 						localMaxElevation = elevMap[passNo - 1][x];
 				}
 					
-				if (random.nextInt(frequency) == 0){
-	        		buildHill(length, localMaxElevation - elevationChange, length + stretch, height);
+				if (random.nextInt(frequency) == 0 && localMaxElevation < height){
+	        		buildHill(length, localMaxElevation - elevationChange, length + stretch - 1, height);
 	        		for (int i = passNo; i < 4; i++){
 	        			for (int x = length; x < length + stretch; x++){
 							elevMap[i][x] = localMaxElevation - elevationChange;
@@ -759,18 +764,18 @@ public class MyLevel extends Level{
 
 	    private int buildGround(int xo, int length, int elevation)
 	    {
+	    	//elevation = height-1;
 
-	        int floor = elevation;
 
 	        //runs from the specified x position to the length of the segment
 	        for (int x = xo; x < xo + length; x++)
 	        {
+
 	            for (int y = 0; y < height; y++)
 	            {
-	                if (y >= floor)
+	                if (y >= elevation)
 	                {
 	                    setBlock(x, y, GROUND);
-	                    elevMap[0][x] = elevation;
 	                }
 	            }
 	        }

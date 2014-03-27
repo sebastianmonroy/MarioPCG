@@ -186,6 +186,12 @@ public class Level implements LevelInterface
 	public byte[][] getMap() {
 		return map;
 	}
+	public void setSpriteMap(SpriteTemplate[][] spriteTemplates) {
+		this.spriteTemplates = spriteTemplates;
+	}
+	public void setMap(byte[][] map) {
+		this.map = map;
+	}
 	public SpriteTemplate[][] getSpriteTemplates() {
 		return spriteTemplates;
 	}

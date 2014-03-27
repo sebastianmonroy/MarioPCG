@@ -163,7 +163,8 @@ public class RandomLevel extends Level{
 	    }
 
 	    private int buildJump(int xo, int maxLength)
-	    {	gaps++;
+	    {	
+	    	gaps++;
 	    	//jl: jump length
 	    	//js: the number of blocks that are available at either side for free
 	        int js = random.nextInt(4) + 2;
