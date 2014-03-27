@@ -157,7 +157,7 @@ public class MyLevel extends Level{
 			elevMap = new int[4][width];
 			for (int i = 0; i < 4; i++){
 				for (int j = 0; j< width; j++){
-					elevMap[i][j] = height;
+					elevMap[i][j] = height-1;
 				}
 			}
 	    }
@@ -179,7 +179,10 @@ public class MyLevel extends Level{
 	        random = new Random(seed);
 
 			buildCompleteGround(4, 2, 12, 5);
-			buildHills(1, 5 , 1 , 4 , 2);
+			buildHills(1, 5 , 1 , 10 , 2);
+			buildHills(2, 5 , 1 , 10 , 2);
+			buildHills(3, 5 , 1 , 10 , 2);
+
 
 			//buildHill(9, height-7, 14, height-2);
 			//buildPipe(10, height-4, height-2, true);
@@ -274,7 +277,7 @@ public class MyLevel extends Level{
 	        	
 	        		
 	       		int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
-	       		int elevationChange = 1 + random.nextInt(maxElevationChange - 1);
+	       		int elevationChange = 2;//2 + random.nextInt(maxElevationChange - 2);
         		int localMaxElevation = height;
 
 				for (int x = length; x < length + stretch; x++){
