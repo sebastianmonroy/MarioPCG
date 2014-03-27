@@ -1,5 +1,6 @@
 package dk.itu.mario.level;
 
+import java.util.*;
 import java.util.Random;
 
 import dk.itu.mario.MarioInterface.Constraints;
@@ -227,7 +228,29 @@ public class MyLevel extends Level{
 	        	heightmap[x][3] = height-10;
 	        }
 
+	        List<int[]> possibleLocations = new ArrayList<int[]>();
+	        for (int x = 0; x < length; x++) {
+	        	for (int j = 0; j < 4; j++) {
+	        		int y = heightmap[x][j];
+	        		if (y > 0) {
+	        			for (int k = 2; k <= 4; k++) {
+	        				if (getBlock(x, y-k) == Level.BLOCK_EMPTY || getBlock(x,y-k) == 0) {
+	        					int[] loc = {x, y-k};
+	        					possibleLocations.add(loc);
+	        				}
+	        			}
+	        		}
+	        	}
+	        }
 
+	    	int coinsLeft = MIN_COINS;
+	        while (possibleLocations.size() > 0 && coinsLeft > 0) {
+	        	int i = random.nextInt(possibleLocations.size());
+	        	int[] loc = possibleLocations.get(i);
+	        	buildCoin(loc[0], loc[1]);
+	        	possibleLocations.remove(i);
+	        	coinsLeft--;
+	        }
 
 	        // fills the end piece
 	        for (int x = length; x < width; x++)
