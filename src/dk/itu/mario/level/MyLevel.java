@@ -50,12 +50,12 @@ public class MyLevel extends Level{
 		private int MAX_HILL_ELEVATION_CHANGE;
 		private int MIN_HILL_STRETCH;
 		private int MAX_HILL_STRETCH;
-		private int HILL_FREQUENCY;
+		private double HILL_FREQUENCY;
 
 		private int MAX_GROUND_ELEVATION_CHANGE;
 		private int MIN_GROUND_STRETCH;
 		private int MAX_GROUND_STRETCH;
-		private int GROUND_GAP_FREQUENCY;
+		private double GROUND_GAP_FREQUENCY;
 
 		private GamePlay GPM;
 		private int[][] elevMap;
@@ -96,16 +96,16 @@ public class MyLevel extends Level{
 
 			switch (playerType) {
 				case SPEEDRUNNER:
-
+					GPM.completionTime = MIN_COMPLETION_TIME;
 					break;
 				case KILLER:
-
+					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/6;
 					break;
 				case EXPLORER:
-
+					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/7;
 					break;
 				case COLLECTOR:
-
+					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME);
 					break;
 			}
 		}
@@ -265,21 +265,21 @@ public class MyLevel extends Level{
 			return (double) ((MAX_COMPLETION_TIME - GPM.completionTime) / (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME));
 		}
 
-		private int calculateHillParameters() {
+		private void calculateHillParameters() {
 			double speed = getSpeed();
 
-			MAX_HILL_ELEVATION_CHANGE = 1 + (1 - speed) * 5;
-			MIN_HILL_STRETCH = 2 + (1 - speed) * 5;
-			MAX_HILL_STRETCH = MIN_HILL_STRETCH + (1 - speed) * 10;
+			MAX_HILL_ELEVATION_CHANGE = 1 + (int) (speed * 4);
+			MIN_HILL_STRETCH = 2 + (int) ((1 - speed) * 5);
+			MAX_HILL_STRETCH = MIN_HILL_STRETCH + (int) ((1 - speed) * 10);
 			HILL_FREQUENCY = 0.2 + (1 - speed) * 0.5;
 		}
 
-		private int calculateGroundParameters() {
+		private void calculateGroundParameters() {
 			double speed = getSpeed();
 
-			MAX_GROUND_ELEVATION_CHANGE = 1 + (1 - speed) * 4;
-			MIN_GROUND_STRETCH = 2 + (1 - speed) * 5;
-			MAX_GROUND_STRETCH = MIN_GROUND_STRETCH + (1 - speed) * 12;
+			MAX_GROUND_ELEVATION_CHANGE = 1 + (int) (speed * 3);
+			MIN_GROUND_STRETCH = 2 + (int) ((1 - speed) * 5);
+			MAX_GROUND_STRETCH = MIN_GROUND_STRETCH + (int) ((1 - speed) * 12);
 			GROUND_GAP_FREQUENCY = 0.1 + (1 - speed) * 0.2;
 		}
 
@@ -291,13 +291,20 @@ public class MyLevel extends Level{
 			lastSeed = seed;
 			random = new Random(seed);
 
-			buildCompleteGround(4, 2, 12, 5);
+			/*buildCompleteGround(4, 2, 12, 5);
 			buildHills(1, 5 , 2 , 10 , 2);
 			buildHills(2, 5 , 2 , 10 , 2);
-			buildHills(3, 5 , 2 , 10 , 2);
+			buildHills(3, 5 , 2 , 10 , 2);*/
+
+			setPlayerType(PlayerStyle.KILLER);
+
+			buildDependentGround();
+			buildDependentHills(1);
+			buildDependentHills(2);
+			buildDependentHills(3);
 
 			buildCoins(10000);
-			buildEnemies(10000);
+			//buildEnemies(10000);
 
 
 			//set the end piece
@@ -357,7 +364,7 @@ public class MyLevel extends Level{
 
 		}
 
-		private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, int gapFrequency){
+		private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, float gapFrequency){
 			int maxElevation = height - 8;
 			int length = 0;
 
@@ -373,8 +380,10 @@ public class MyLevel extends Level{
 					length += 1 + random.nextInt(4);
 				} else {
 					//create more ground
-					int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch);
-					int elevationChange = random.nextInt(maxElevationChange);
+					//System.out.println(maxFlatStretch - minFlatStretch + 1);
+					int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
+					//System.out.println(maxElevationChange);
+					int elevationChange = random.nextInt(maxElevationChange + 1);
 					//int elevationChange = maxElevationChange;
 					if (random.nextInt(2) == 0 || curElevation < maxElevation + maxElevationChange)
 						curElevation += elevationChange;
@@ -397,6 +406,11 @@ public class MyLevel extends Level{
 					length += stretch;
 				}
 			}
+		}
+
+		private void buildDependentGround() {
+			calculateGroundParameters();
+			buildCompleteGround(MAX_GROUND_ELEVATION_CHANGE, MIN_GROUND_STRETCH, MAX_GROUND_STRETCH, (float) GROUND_GAP_FREQUENCY);
 		}
 
 		private void buildCoins(int numCoinsToSpawn) {
@@ -452,7 +466,7 @@ public class MyLevel extends Level{
 
 			calculateEnemyProbabilities();
 
-			System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
+			//System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
 			// randomly select possible spawn locations from the list, spawn the enemies, remove the used spawn locations from the list
 			int enemiesLeft = numEnemiesToSpawn;
 			while (possibleLocations.size() > 0 && enemiesLeft > 0) {
@@ -479,8 +493,10 @@ public class MyLevel extends Level{
 			while (length < width - 64)
 			{
 				//make a hill
+				System.out.println(maxFlatStretch - minFlatStretch + 1);
 		   		int stretch  =  minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
-		   		int elevationChange = 2 + random.nextInt(maxElevationChange - 2);
+		   		System.out.println(maxElevationChange + 1);
+		   		int elevationChange = 2 + random.nextInt(maxElevationChange + 1);
 				int localMaxElevation = height;
 
 				for (int x = length; x < length + stretch; x++){
@@ -501,6 +517,11 @@ public class MyLevel extends Level{
 				
 			}
 		
+		}
+
+		private void buildDependentHills(int passNo) {
+			calculateHillParameters();
+			buildHills(passNo, MAX_HILL_ELEVATION_CHANGE, MIN_HILL_STRETCH, MAX_HILL_STRETCH, (float) HILL_FREQUENCY);
 		}
 
 
