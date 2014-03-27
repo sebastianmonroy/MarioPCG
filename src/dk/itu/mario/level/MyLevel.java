@@ -38,8 +38,8 @@ public class MyLevel extends Level{
 		private int MAX_POWERS = 5;
 		private int MIN_COINBLOCKS = 20;
 		private int MAX_COINBLOCKS = 100;
-		private int MIN_COMPLETION_TIME = 200-173;
 		private int MAX_COMPLETION_TIME = 200;
+		private int MIN_COMPLETION_TIME = MAX_COMPLETION_TIME-173;
 		private double MIN_ENEMY_PROBABILITY = 0.1;
 		private double MAX_ENEMY_PROBABILITY = 0.7;
 
@@ -47,10 +47,26 @@ public class MyLevel extends Level{
 		private double turtleProbability;
 		private double armoredProbability;
 
+		private int MAX_HILL_ELEVATION_CHANGE;
+		private int MIN_HILL_STRETCH;
+		private int MAX_HILL_STRETCH;
+		private int HILL_FREQUENCY;
+
+		private int MAX_GROUND_ELEVATION_CHANGE;
+		private int MIN_GROUND_STRETCH;
+		private int MAX_GROUND_STRETCH;
+		private int GROUND_GAP_FREQUENCY;
+
 		private GamePlay GPM;
 		private int[][] elevMap;
+		private PlayerStyle playerType;
 
-
+		private enum PlayerStyle {
+			SPEEDRUNNER,
+			KILLER,
+			EXPLORER,
+			COLLECTOR
+		}
 
 		public MyLevel(int width, int height, long seed, int difficulty, int type, GamePlay PlayerMetrics)
 		{
@@ -74,8 +90,27 @@ public class MyLevel extends Level{
 			creat(seed, difficulty, type);
 		}
 
+		private void setPlayerType(PlayerStyle ps) {
+			// set player type by altering game parameters
+			playerType = ps;
 
-		public int getNumEnemiesToSpawn() {
+			switch (playerType) {
+				case SPEEDRUNNER:
+
+					break;
+				case KILLER:
+
+					break;
+				case EXPLORER:
+
+					break;
+				case COLLECTOR:
+
+					break;
+			}
+		}
+
+		private int getNumEnemiesToSpawn() {
 			int result;
 
 			result = (int) (getKillPercentage() * GPM.totalEnemies * 2);
@@ -89,7 +124,7 @@ public class MyLevel extends Level{
 			return result;
 		}
 
-		public int getNumCoinsToSpawn() {
+		private int getNumCoinsToSpawn() {
 			int result;
 
 			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
@@ -103,7 +138,7 @@ public class MyLevel extends Level{
 			return result;
 		}
 
-		public int getNumGapsToSpawn() {
+		private int getNumGapsToSpawn() {
 			int result;
 
 			result = 0;
@@ -117,7 +152,7 @@ public class MyLevel extends Level{
 			return result;
 		}
 
-		public int getNumPowerToSpawn() {
+		private int getNumPowerToSpawn() {
 			int result;
 
 			result = (int) ((0.75 + 3 * (GPM.enemyKillByFire / getKillCount())) * GPM.totalpowerBlocks);
@@ -131,7 +166,7 @@ public class MyLevel extends Level{
 			return result;
 		}
 
-		public int getNumCoinBlocksToSpawn() {
+		private int getNumCoinBlocksToSpawn() {
 			int result;
 
 			result = (int) (0.2f + getNumCoinsToSpawn());
@@ -145,7 +180,7 @@ public class MyLevel extends Level{
 			return result;
 		}
 
-		public void calculateEnemyProbabilities() {
+		private void calculateEnemyProbabilities() {
 			goombaProbability = getGoombaPercentage();
 			if (goombaProbability < MIN_ENEMY_PROBABILITY) {
 				goombaProbability = MIN_ENEMY_PROBABILITY;
@@ -174,7 +209,7 @@ public class MyLevel extends Level{
 			armoredProbability = armoredProbability / totalProbability;
 		}
 
-		public double getGoombaPercentage() {
+		private double getGoombaPercentage() {
 			if (getKillCount() <= 0) {
 				// avoid divide by zero
 				return 0;
@@ -183,7 +218,7 @@ public class MyLevel extends Level{
 			}
 		}
 
-		public double getTurtlePercentage() {
+		private double getTurtlePercentage() {
 			if (getKillCount() <= 0) {
 				// avoid divide by zero
 				return 0;
@@ -192,7 +227,7 @@ public class MyLevel extends Level{
 			}
 		}
 
-		public double getArmoredPercentage() {
+		private double getArmoredPercentage() {
 			if (getKillCount() <= 0) {
 				// avoid divide by zero
 				return 0;
@@ -201,29 +236,51 @@ public class MyLevel extends Level{
 			}
 		}
 
-		public int getCannonCount() {
-
+		private int getCannonCount() {
 			return (int) (GPM.CannonBallKilled / 1.5);
 		}
 
-		public double getCoinPercentage() {
+		private double getCoinPercentage() {
 			return (double) (GPM.coinsCollected / GPM.totalCoins);
 		}
 
-		public double getKillPercentage() {
+		private double getKillPercentage() {
 			return (double) (getKillCount() / GPM.totalEnemies);
 		}
 
-		public int getKillCount() {
+		private int getKillCount() {
 			return GPM.RedTurtlesKilled + GPM.GreenTurtlesKilled + GPM.ArmoredTurtlesKilled + GPM.GoombasKilled;
 		}
 
-		public double getBlocksPercentage() {
+		private double getBlocksPercentage() {
 			return GPM.percentageBlocksDestroyed;
 		}
 
-		public double getRunPercentage() {
+		private double getRunPercentage() {
 			return (double) (GPM.timeSpentRunning / GPM.completionTime);
+		}
+
+		private double getSpeed() {
+			// returns 1 for fastest, 0 for slowest
+			return (double) ((MAX_COMPLETION_TIME - GPM.completionTime) / (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME));
+		}
+
+		private int calculateHillParameters() {
+			double speed = getSpeed();
+
+			MAX_HILL_ELEVATION_CHANGE = 1 + (1 - speed) * 5;
+			MIN_HILL_STRETCH = 2 + (1 - speed) * 5;
+			MAX_HILL_STRETCH = MIN_HILL_STRETCH + (1 - speed) * 10;
+			HILL_FREQUENCY = 0.2 + (1 - speed) * 0.5;
+		}
+
+		private int calculateGroundParameters() {
+			double speed = getSpeed();
+
+			MAX_GROUND_ELEVATION_CHANGE = 1 + (1 - speed) * 4;
+			MIN_GROUND_STRETCH = 2 + (1 - speed) * 5;
+			MAX_GROUND_STRETCH = MIN_GROUND_STRETCH + (1 - speed) * 12;
+			GROUND_GAP_FREQUENCY = 0.1 + (1 - speed) * 0.2;
 		}
 
 		public void creat(long seed, int difficulty, int type)
@@ -311,7 +368,7 @@ public class MyLevel extends Level{
 			int curElevation = height -1;
 			while (length < width - 64)
 			{
-				if (getBlock(length-1, height - 1) != 0 && random.nextInt(gapFrequency) == 0){
+				if (getBlock(length-1, height - 1) != 0 && random.nextFloat() <= gapFrequency){
 					//make a gap
 					length += 1 + random.nextInt(4);
 				} else {
@@ -415,7 +472,7 @@ public class MyLevel extends Level{
 
 		
 
-		private void buildHills(int passNo, int maxElevationChange, int minFlatStretch, int maxFlatStretch, int frequency){
+		private void buildHills(int passNo, int maxElevationChange, int minFlatStretch, int maxFlatStretch, float frequency){
 			int length = 10;
 
 			
@@ -431,7 +488,7 @@ public class MyLevel extends Level{
 						localMaxElevation = elevMap[passNo - 1][x];
 				}
 					
-				if (random.nextInt(frequency) == 0 && localMaxElevation < height){
+				if (random.nextFloat() <= frequency && localMaxElevation < height){
 					buildHill(length, localMaxElevation - elevationChange, length + stretch - 1, height);
 					for (int i = passNo; i < 4; i++){
 						for (int x = length; x < length + stretch; x++){
