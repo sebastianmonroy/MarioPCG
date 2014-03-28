@@ -98,22 +98,42 @@ public class MyLevel extends Level{
 				case SPEEDRUNNER:
 					GPM.coinsCollected = 0;
 					GPM.totalCoins = 0;
+					GPM.totalEnemies = 0;
+					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.ArmoredTurtlesKilled = (int) (.10 * GPM.totalEnemies);
 					GPM.completionTime = MIN_COMPLETION_TIME;
 					break;
 				case KILLER:
 					GPM.coinsCollected = 20;
 					GPM.totalCoins = 30;
-					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
-					break;
-				case EXPLORER:
-					GPM.coinsCollected = 100;
-					GPM.totalCoins = 100;
+					GPM.totalEnemies = 100;
+					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.ArmoredTurtlesKilled = (int) (.10 * GPM.totalEnemies);
 					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
 					break;
 				case COLLECTOR:
 					GPM.coinsCollected = 100;
 					GPM.totalCoins = 100;
-					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME);
+					GPM.totalEnemies = 0;
+					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.ArmoredTurtlesKilled = (int) (.10 * GPM.totalEnemies);
+					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
+					break;
+				case COMPLETIONIST:
+					GPM.coinsCollected = 100;
+					GPM.totalCoins = 100;
+					GPM.totalEnemies = 100;
+					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
+					GPM.ArmoredTurtlesKilled = (int) (.10 * GPM.totalEnemies);
+					GPM.completionTime = MAX_COMPLETION_TIME;
 					break;
 			}
 		}
@@ -122,7 +142,7 @@ public class MyLevel extends Level{
 			int result;
 
 			result = (int) (getKillPercentage() * GPM.totalEnemies * 2);
-
+			System.out.println(GPM.totalEnemies + " // " + result);
 			if (result < MIN_ENEMIES) {
 				result = MIN_ENEMIES;
 			} else if (result > MAX_ENEMIES) {
@@ -136,7 +156,7 @@ public class MyLevel extends Level{
 			int result;
 
 			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
-			System.out.println(GPM.totalCoins + " // " + result);
+			//System.out.println(GPM.totalCoins + " // " + result);
 			if (result < MIN_COINS) {
 				result = MIN_COINS;
 			} else if (result > MAX_COINS) {
@@ -308,7 +328,7 @@ public class MyLevel extends Level{
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);*/
 
-			setPlayerType(PlayerStyle.COLLECTOR);
+			setPlayerType(PlayerStyle.KILLER);
 
 			buildDependentGround();
 			buildDependentHills(1);
@@ -316,7 +336,7 @@ public class MyLevel extends Level{
 			buildDependentHills(3);
 
 			buildDependentCoins();
-			//buildEnemies(10000);
+			buildDependentEnemies();
 
 
 			//set the end piece
@@ -482,7 +502,7 @@ public class MyLevel extends Level{
 
 			calculateEnemyProbabilities();
 
-			//System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
+			System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
 			// randomly select possible spawn locations from the list, spawn the enemies, remove the used spawn locations from the list
 			int enemiesLeft = numEnemiesToSpawn;
 			while (possibleLocations.size() > 0 && enemiesLeft > 0) {
@@ -496,8 +516,13 @@ public class MyLevel extends Level{
 				} else {
 					buildArmoredTurtle(loc[0], loc[1]);
 				}
-				possibleLocations.remove(i);	  	
+				possibleLocations.remove(i);
+				enemiesLeft--;
 			}
+		}
+
+		private void buildDependentEnemies() {
+			buildEnemies(getNumEnemiesToSpawn());
 		}
 
 		
@@ -692,14 +717,14 @@ public class MyLevel extends Level{
 		}
 
 		private void buildArmoredTurtle(int x, int y) {
-			this.buildArmoredTurtle(x, y, random.nextInt(4) == 3);
+			this.buildArmoredTurtle(x, y, random.nextInt(5) == 0);
 		}
 
 		private void buildTurtle(int x, int y) {
 			if (random.nextBoolean()) {
-				buildGreenTurtle(x, y, random.nextInt(4) == 3);
+				buildGreenTurtle(x, y, random.nextInt(4) == 0);
 			} else {
-				buildRedTurtle(x, y, random.nextInt(4) == 3);
+				buildRedTurtle(x, y, random.nextInt(4) == 0);
 			}
 			ENEMIES++;
 		}

@@ -1,24 +1,9 @@
 StartTime = -17
-Jump:  StTime = 11 EdTime = 21
-Jump:  StTime = 25 EdTime = 35
-Jump:  StTime = 38 EdTime = 52
-CollectCoin:  time = 61
-Jump:  StTime = 58 EdTime = 74
-Jump:  StTime = 75 EdTime = 86
-Jump:  StTime = 91 EdTime = 106
-Jump:  StTime = 121 EdTime = 139
-CollectCoin:  time = 140
-Jump:  StTime = 145 EdTime = 155
-CollectCoin:  time = 169
-Jump:  StTime = 158 EdTime = 172
-Jump:  StTime = 176 EdTime = 189
-Jump:  StTime = 194 EdTime = 212
-Jump:  StTime = 229 EdTime = 235
-Jump:  StTime = 256 EdTime = 262
-Jump:  StTime = 291 EdTime = 303
-Jump:  StTime = 331 EdTime = 341
-Jump:  StTime = 371 EdTime = 391
-Totaltime = 409
-RightMove: StTime = 1 EdTime = 391
-RunState: StTime = 1 EdTime = 392
-LittleState: StTime = -17 EdTime = 392
+Jump:  StTime = 6 EdTime = 17
+RightMove: StTime = -16 EdTime = 40
+CollectCoin:  time = 38
+RunState: StTime = -17 EdTime = 57
+LittleState: StTime = -17 EdTime = 57
+Totaltime = 74
+Jump:  StTime = 53 EdTime = 57
+Die:  EnemyType = 1
