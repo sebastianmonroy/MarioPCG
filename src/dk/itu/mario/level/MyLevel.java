@@ -1,7 +1,6 @@
 package dk.itu.mario.level;
 
 import java.util.*;
-import java.util.Random;
 
 import dk.itu.mario.MarioInterface.Constraints;
 import dk.itu.mario.MarioInterface.GamePlay;
@@ -154,7 +153,7 @@ public class MyLevel extends Level{
 			elevMap = new int[4][width];
 			for (int i = 0; i < 4; i++){
 				for (int j = 0; j< width; j++){
-					elevMap[i][j] = height-1;
+					elevMap[i][j] = height;
 				}
 			}
 	    }
@@ -180,6 +179,8 @@ public class MyLevel extends Level{
 			buildHills(1, 5 , 2 , 10 , 2);
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);
+			placePipes(10);
+			placeCannons(50);
 			
 			buildCoins(10000);
 
@@ -248,7 +249,7 @@ public class MyLevel extends Level{
 	        					// potential coin location found! add to list.
 	        					int[] loc = {x, y-k};
 	        					possibleLocations.add(loc);
-	        					System.out.println(x);
+	        					//System.out.println(x);
 	        				}
 	        			}
 	        		}
@@ -340,6 +341,53 @@ public class MyLevel extends Level{
 				
 	        }
 	    
+	    }
+	    
+	    private void placePipes(int frequency){
+	    	int length = 0;
+	    	
+			//System.out.println();
+
+	    	for (int x = 10; x < width-64; x+=2){
+
+	    		if (random.nextInt(frequency) == 0){
+	    			if (elevMap[0][x] == elevMap[0][x+1] && elevMap[0][x] < height){
+	    				//System.out.println(height);
+	    				//System.out.println(elevMap[0][x] + ", " + elevMap[0][x+1]);
+	    				int pipeHeight = 2 + random.nextInt(3);
+	    				if (elevMap[3][x-1] - (elevMap[0][x] - pipeHeight) < 5){
+	    					buildPipe(x, elevMap[0][x] - pipeHeight, elevMap[0][x]-1, false);
+	    					elevMap[0][x]   = elevMap[0][x]     - pipeHeight;
+    						elevMap[0][x+1] = elevMap[0][x + 1] - pipeHeight;
+	    					for (int i = 1; i < 4; i++){
+	    						elevMap[i][x]   = Math.min(elevMap[i][x],     elevMap[0][x]     - pipeHeight);
+	    						elevMap[i][x+1] = Math.min(elevMap[i][x + 1], elevMap[0][x + 1] - pipeHeight);
+	    					}
+	    				}
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    private void placeCannons(int frequency){
+	    	int tier = random.nextInt(4);
+	    	//tier = 1;
+	    		
+	    	for (int x = 10; x < width-64; x+=1){
+		    	System.out.println(elevMap[1][x]);
+
+	    		if (random.nextInt(frequency) == 0){
+	    			if (elevMap[tier][x] < height && 
+	    				getBlock(x,elevMap[tier][x]) != Level.TUBE_TOP_LEFT && 
+	    				getBlock(x,elevMap[tier][x]) != Level.TUBE_TOP_RIGHT){
+	    				if (elevMap[3][x-1] - (elevMap[tier][x] - 2) < 5){
+
+	    					buildCannon(x,elevMap[tier][x]-2, elevMap[tier][x] - 1);
+	    				}
+	    				
+	    			}
+	    		}
+	    	}
 	    }
 
 
