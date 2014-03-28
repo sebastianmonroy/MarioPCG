@@ -179,8 +179,8 @@ public class MyLevel extends Level{
 			buildHills(1, 5 , 2 , 10 , 2);
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);
-			placePipes(10);
-			placeCannons(50);
+			placePipes(1);
+			placeCannons(1);
 			
 			buildCoins(10000);
 
@@ -288,6 +288,7 @@ public class MyLevel extends Level{
 	        	//create more ground
 	        	else{
 	        	int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch);
+	        	if (length + stretch > width - 64) stretch = width - 64 - length;
 	        	int elevationChange = random.nextInt(maxElevationChange);
 	        	//int elevationChange = maxElevationChange;
 	        	if (random.nextInt(2) == 0 || curElevation < maxElevation + maxElevationChange)
@@ -328,7 +329,7 @@ public class MyLevel extends Level{
 						localMaxElevation = elevMap[passNo - 1][x];
 				}
 					
-				if (random.nextInt(frequency) == 0 && localMaxElevation < height){
+				if (random.nextInt(frequency) == 0 && localMaxElevation < height && localMaxElevation - elevationChange > 2){
 	        		buildHill(length, localMaxElevation - elevationChange, length + stretch - 1, height);
 	        		for (int i = passNo; i < 4; i++){
 	        			for (int x = length; x < length + stretch; x++){
@@ -360,8 +361,8 @@ public class MyLevel extends Level{
 	    					elevMap[0][x]   = elevMap[0][x]     - pipeHeight;
     						elevMap[0][x+1] = elevMap[0][x + 1] - pipeHeight;
 	    					for (int i = 1; i < 4; i++){
-	    						elevMap[i][x]   = Math.min(elevMap[i][x],     elevMap[0][x]     - pipeHeight);
-	    						elevMap[i][x+1] = Math.min(elevMap[i][x + 1], elevMap[0][x + 1] - pipeHeight);
+	    						elevMap[i][x]   = Math.min(elevMap[i][x],     elevMap[0][x]);
+	    						elevMap[i][x+1] = Math.min(elevMap[i][x + 1], elevMap[0][x + 1]);
 	    					}
 	    				}
 	    			}
