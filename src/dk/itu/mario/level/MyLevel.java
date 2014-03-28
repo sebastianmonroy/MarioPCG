@@ -96,15 +96,23 @@ public class MyLevel extends Level{
 
 			switch (playerType) {
 				case SPEEDRUNNER:
+					GPM.coinsCollected = 0;
+					GPM.totalCoins = 0;
 					GPM.completionTime = MIN_COMPLETION_TIME;
 					break;
 				case KILLER:
-					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/6;
+					GPM.coinsCollected = 20;
+					GPM.totalCoins = 30;
+					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
 					break;
 				case EXPLORER:
-					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/7;
+					GPM.coinsCollected = 100;
+					GPM.totalCoins = 100;
+					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
 					break;
 				case COLLECTOR:
+					GPM.coinsCollected = 100;
+					GPM.totalCoins = 100;
 					GPM.completionTime = (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME);
 					break;
 			}
@@ -128,7 +136,7 @@ public class MyLevel extends Level{
 			int result;
 
 			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
-
+			System.out.println(GPM.totalCoins + " // " + result);
 			if (result < MIN_COINS) {
 				result = MIN_COINS;
 			} else if (result > MAX_COINS) {
@@ -214,7 +222,7 @@ public class MyLevel extends Level{
 				// avoid divide by zero
 				return 0;
 			} else {
-				return (double) ((GPM.GoombasKilled) / getKillCount());
+				return ((double) (GPM.GoombasKilled)) / ((double) (getKillCount()));
 			}
 		}
 
@@ -223,7 +231,7 @@ public class MyLevel extends Level{
 				// avoid divide by zero
 				return 0;
 			} else {
-				return (double) ((GPM.RedTurtlesKilled + GPM.GreenTurtlesKilled) / getKillCount());
+				return ((double) (GPM.RedTurtlesKilled + GPM.GreenTurtlesKilled)) / ((double) (getKillCount()));
 			}
 		}
 
@@ -232,7 +240,7 @@ public class MyLevel extends Level{
 				// avoid divide by zero
 				return 0;
 			} else {
-				return (double) ((GPM.ArmoredTurtlesKilled) / getKillCount());
+				return  ((double) (GPM.ArmoredTurtlesKilled)) / ((double) (getKillCount()));
 			}
 		}
 
@@ -241,11 +249,15 @@ public class MyLevel extends Level{
 		}
 
 		private double getCoinPercentage() {
-			return (double) (GPM.coinsCollected / GPM.totalCoins);
+			if (GPM.totalCoins == 0) {
+				return 0;
+			} else {
+				return  ((double) (GPM.coinsCollected)) / ((double) (GPM.totalCoins));
+			}
 		}
 
 		private double getKillPercentage() {
-			return (double) (getKillCount() / GPM.totalEnemies);
+			return (double) (getKillCount()) / ((double) (GPM.totalEnemies));
 		}
 
 		private int getKillCount() {
@@ -257,12 +269,12 @@ public class MyLevel extends Level{
 		}
 
 		private double getRunPercentage() {
-			return (double) (GPM.timeSpentRunning / GPM.completionTime);
+			return ((double) (GPM.timeSpentRunning)) / ((double) (GPM.completionTime));
 		}
 
 		private double getSpeed() {
 			// returns 1 for fastest, 0 for slowest
-			return (double) ((MAX_COMPLETION_TIME - GPM.completionTime) / (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME));
+			return  ((double) (MAX_COMPLETION_TIME - GPM.completionTime)) / ((double) (MAX_COMPLETION_TIME - MIN_COMPLETION_TIME));
 		}
 
 		private void calculateHillParameters() {
@@ -296,14 +308,14 @@ public class MyLevel extends Level{
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);*/
 
-			setPlayerType(PlayerStyle.KILLER);
+			setPlayerType(PlayerStyle.COLLECTOR);
 
 			buildDependentGround();
 			buildDependentHills(1);
 			buildDependentHills(2);
 			buildDependentHills(3);
 
-			buildCoins(10000);
+			buildDependentCoins();
 			//buildEnemies(10000);
 
 
@@ -446,6 +458,10 @@ public class MyLevel extends Level{
 				coinsLeft--;
 				//System.out.print(coinsLeft + " // ");
 			}
+		}
+
+		private void buildDependentCoins() {
+			buildCoins(getNumCoinsToSpawn());
 		}
 
 		private void buildEnemies(int numEnemiesToSpawn) {
