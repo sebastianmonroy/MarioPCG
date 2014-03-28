@@ -140,7 +140,7 @@ public class MyLevel extends Level{
 		private int getNumEnemiesToSpawn() {
 			int result;
 
-			result = (int) (getKillPercentage() * GPM.totalEnemies * 2);
+			result = (int) (getKillPercentage() * GPM.totalEnemies * 4/3);
 			
 			if (result < MIN_ENEMIES) {
 				result = MIN_ENEMIES;
@@ -155,7 +155,7 @@ public class MyLevel extends Level{
 		private int getNumCoinsToSpawn() {
 			int result;
 
-			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
+			result = (int) (getCoinPercentage() * GPM.totalCoins * 4/3);
 			
 			if (result < MIN_COINS) {
 				result = MIN_COINS;
@@ -449,7 +449,7 @@ public class MyLevel extends Level{
 			for (int x = 10; x <= elevMap[0].length-64; x++) {
 				for (int j = 0; j < elevMap.length; j++) {
 					int y = elevMap[j][x];
-					if (y > 0) {
+					if (y > 0 && y < height) {
 						for (int k = 2; k <= 5; k++) {
 							if (y-k < 0 || getBlock(x, y-k) == Level.HILL_FILL || getBlock(x, y-k) == Level.HILL_LEFT || getBlock(x, y-k) == Level.HILL_RIGHT || getBlock(x, y-k) == Level.HILL_TOP_LEFT || getBlock(x, y-k) == Level.HILL_TOP_RIGHT || getBlock(x, y-k) == Level.HILL_TOP) {
 								// don't bother searching for more possible locations if you find a hill above this platform
