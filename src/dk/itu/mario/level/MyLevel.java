@@ -56,6 +56,8 @@ public class MyLevel extends Level{
 		private int MAX_GROUND_STRETCH;
 		private double GROUND_GAP_FREQUENCY;
 
+		private double POWER_BLOCK_FREQUENCY = 0.1;
+
 		private GamePlay GPM;
 		private int[][] elevMap;
 		private PlayerStyle playerType;
@@ -744,7 +746,11 @@ public class MyLevel extends Level{
 		}
 
 		private void buildBlockEmpty(int x, int y) {
-			setBlock(x, y, Level.BLOCK_EMPTY);
+			if (random.nextFloat() <= POWER_BLOCK_FREQUENCY && getBlock(x,y) != Level.HILL_FILL && getBlock(x,y) != Level.HILL_LEFT && getBlock(x,y) != Level.HILL_RIGHT) {
+				buildBlockPower(x, y);
+			} else {
+				setBlock(x, y, Level.BLOCK_EMPTY);
+			}
 		}
 
 		private void buildBlockCoin(int x, int y) {
