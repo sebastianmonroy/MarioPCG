@@ -179,8 +179,8 @@ public class MyLevel extends Level{
 			buildHills(1, 5 , 2 , 10 , 2);
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);
-			placePipes(1);
-			placeCannons(1);
+			placePipes(20);
+			placeCannons(50);
 			
 			buildCoins(10000);
 
@@ -355,7 +355,7 @@ public class MyLevel extends Level{
 	    			if (elevMap[0][x] == elevMap[0][x+1] && elevMap[0][x] < height){
 	    				//System.out.println(height);
 	    				//System.out.println(elevMap[0][x] + ", " + elevMap[0][x+1]);
-	    				int pipeHeight = 2 + random.nextInt(3);
+	    				int pipeHeight = 2 + random.nextInt(5);
 	    				if (elevMap[3][x-1] - (elevMap[0][x] - pipeHeight) < 5){
 	    					buildPipe(x, elevMap[0][x] - pipeHeight, elevMap[0][x]-1, false);
 	    					elevMap[0][x]   = elevMap[0][x]     - pipeHeight;
@@ -375,7 +375,7 @@ public class MyLevel extends Level{
 	    	//tier = 1;
 	    		
 	    	for (int x = 10; x < width-64; x+=1){
-		    	System.out.println(elevMap[1][x]);
+		    	//System.out.println(elevMap[1][x]);
 
 	    		if (random.nextInt(frequency) == 0){
 	    			if (elevMap[tier][x] < height && 
