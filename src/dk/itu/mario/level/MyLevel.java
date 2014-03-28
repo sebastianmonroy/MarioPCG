@@ -336,8 +336,10 @@ public class MyLevel extends Level{
 			buildDependentHills(2);
 			buildDependentHills(3);
 
-			placePipes(0.1f);
-			placeCannons(0.05f);
+			//placePipes(0.1f);
+			//placeCannons(0.05f);
+
+			buildEmptyBlocks(100);
 
 			buildDependentCoins();
 			buildDependentEnemies();
@@ -452,11 +454,11 @@ public class MyLevel extends Level{
 							if (y-k < 0 || getBlock(x, y-k) == Level.HILL_FILL || getBlock(x, y-k) == Level.HILL_LEFT || getBlock(x, y-k) == Level.HILL_RIGHT || getBlock(x, y-k) == Level.HILL_TOP_LEFT || getBlock(x, y-k) == Level.HILL_TOP_RIGHT || getBlock(x, y-k) == Level.HILL_TOP) {
 								// don't bother searching for more possible locations if you find a hill above this platform
 								break;
-							} else if (getBlock(x,y-k) == 0) {
+							} else if (getBlock(x,y-k) == 0 || getBlock(x,y-k) == BLOCK_EMPTY) {
 								// potential coin location found! add to list.
 								int[] loc = {x, y-k};
 								possibleLocations.add(loc);
-							}
+							} 
 						}
 					}
 				}
@@ -468,7 +470,11 @@ public class MyLevel extends Level{
 			while (possibleLocations.size() > 0 && coinsLeft > 0) {
 				int i = random.nextInt(possibleLocations.size());
 				int[] loc = possibleLocations.get(i);
-				buildCoin(loc[0], loc[1]);
+				if (getBlock(loc[0], loc[1]) == BLOCK_EMPTY) {
+					buildBlockCoin(loc[0], loc[1]);
+				} else {
+					buildCoin(loc[0], loc[1]);
+				}
 
 				possibleLocations.remove(i);
 				coinsLeft--;
@@ -478,6 +484,10 @@ public class MyLevel extends Level{
 
 		private void buildDependentCoins() {
 			buildCoins(getNumCoinsToSpawn());
+		}
+
+		private void buildCoin(int x, int y) {
+			setBlock(x, y, Level.COIN);
 		}
 
 		private void buildEnemies(int numEnemiesToSpawn) {
@@ -520,8 +530,6 @@ public class MyLevel extends Level{
 		private void buildDependentEnemies() {
 			buildEnemies(getNumEnemiesToSpawn());
 		}
-
-		
 
 		private void buildHills(int passNo, int maxElevationChange, int minFlatStretch, int maxFlatStretch, float frequency){
 			int length = 10;
@@ -685,12 +693,54 @@ public class MyLevel extends Level{
 			}
 		}
 
-		private void buildCoin(int x, int y) {
-			setBlock(x, y, Level.COIN);
-		}
+		private void buildEmptyBlocks(int numBlocksToSpawn) {
+			// create list of all possible locations for a block to be spawned
+			List<int[]> possibleLocations = new ArrayList<int[]>();
+			for (int x = 10; x <= elevMap[0].length-64; x++) {
+				for (int j = 0; j < elevMap.length; j++) {
+					int y = elevMap[j][x] - 3;
+					if (y >= 0) {
+						if (getBlock(x-1,y) != TUBE_TOP_LEFT && getBlock(x-1,y) != TUBE_TOP_RIGHT && getBlock(x-1,y) != BLOCK_EMPTY
+						&& getBlock(x,y) != TUBE_TOP_LEFT && getBlock(x,y) != TUBE_TOP_RIGHT && getBlock(x-1,y) != BLOCK_EMPTY
+						&& getBlock(x+1,y) != TUBE_TOP_LEFT && getBlock(x+1,y) != TUBE_TOP_RIGHT && getBlock(x-1,y) != BLOCK_EMPTY) {
+							// potential block location found! add to list.
+							int[] loc = {x, y};
+							possibleLocations.add(loc);
+						}
+					}
+				}
+			}
 
-		private void buildEmptyBlocks() {
+			//System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
+			// randomly select possible spawn locations from the list, spawn the enemies, remove the used spawn locations from the list
+			int blocksLeft = numBlocksToSpawn;
+			while (possibleLocations.size() > 0 && blocksLeft > 2) {
+				int i = random.nextInt(possibleLocations.size());
+				int[] loc = possibleLocations.get(i);
 
+				buildBlockEmpty(loc[0] - 1, loc[1]);		possibleLocations.remove(new int[]{loc[0] - 1, loc[1]});
+				buildBlockEmpty(loc[0]	  , loc[1]);		possibleLocations.remove(new int[]{loc[0]	 , loc[1]});
+				buildBlockEmpty(loc[0] + 1, loc[1]);		possibleLocations.remove(new int[]{loc[0] + 1, loc[1]});
+				blocksLeft -= 3;
+
+				int sectionLeft = random.nextInt(3);
+				int offset = 2;
+				while (sectionLeft > 0) {
+					if (getBlock(loc[0] - offset, loc[1]) != TUBE_TOP_LEFT && getBlock(loc[0] - offset,loc[1]) != TUBE_TOP_RIGHT) {
+						buildBlockEmpty(loc[0] - offset, loc[1]);		possibleLocations.remove(new int[]{loc[0] - offset, loc[1]});
+						blocksLeft--;
+						sectionLeft--;
+					} else if (getBlock(loc[0] + offset, loc[1]) != TUBE_TOP_LEFT && getBlock(loc[0] + offset,loc[1]) != TUBE_TOP_RIGHT) {
+						buildBlockEmpty(loc[0] + offset, loc[1]);		possibleLocations.remove(new int[]{loc[0] + offset, loc[1]});
+						blocksLeft--;
+						sectionLeft--;
+						offset++;
+					}
+				}
+
+				
+				blocksLeft--;
+			}
 		}
 
 		private void buildBlockEmpty(int x, int y) {
