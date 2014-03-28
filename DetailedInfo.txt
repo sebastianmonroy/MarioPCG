@@ -1,9 +1,9 @@
 StartTime = -17
-Jump:  StTime = 6 EdTime = 17
-RightMove: StTime = -16 EdTime = 40
-CollectCoin:  time = 38
-RunState: StTime = -17 EdTime = 57
+RightMove: StTime = 1 EdTime = 21
+Jump:  StTime = 10 EdTime = 28
+Jump:  StTime = 30 EdTime = 40
+RightMove: StTime = 38 EdTime = 40
+RunState: StTime = 0 EdTime = 57
 LittleState: StTime = -17 EdTime = 57
 Totaltime = 74
-Jump:  StTime = 53 EdTime = 57
-Die:  EnemyType = 1
+Die:  Gap 

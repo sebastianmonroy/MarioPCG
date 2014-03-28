@@ -1,7 +1,6 @@
 package dk.itu.mario.level;
 
 import java.util.*;
-import java.util.Random;
 
 import dk.itu.mario.MarioInterface.Constraints;
 import dk.itu.mario.MarioInterface.GamePlay;
@@ -31,7 +30,7 @@ public class MyLevel extends Level{
 		private int MIN_ENEMIES = 10;
 		private int MAX_ENEMIES = 100;
 		private int MIN_COINS = 10;
-		private int MAX_COINS = 100;
+		private int MAX_COINS = 300;
 		private int MIN_GAPS = 5;
 		private int MAX_GAPS = 20;
 		private int MIN_POWERS = 1;
@@ -64,8 +63,8 @@ public class MyLevel extends Level{
 		private enum PlayerStyle {
 			SPEEDRUNNER,
 			KILLER,
-			EXPLORER,
-			COLLECTOR
+			COLLECTOR,
+			COMPLETIONIST
 		}
 
 		public MyLevel(int width, int height, long seed, int difficulty, int type, GamePlay PlayerMetrics)
@@ -108,7 +107,7 @@ public class MyLevel extends Level{
 				case KILLER:
 					GPM.coinsCollected = 20;
 					GPM.totalCoins = 30;
-					GPM.totalEnemies = 100;
+					GPM.totalEnemies = MAX_ENEMIES;
 					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
 					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
 					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
@@ -116,8 +115,8 @@ public class MyLevel extends Level{
 					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
 					break;
 				case COLLECTOR:
-					GPM.coinsCollected = 100;
-					GPM.totalCoins = 100;
+					GPM.coinsCollected = MAX_COINS;
+					GPM.totalCoins = MAX_COINS;
 					GPM.totalEnemies = 0;
 					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
 					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
@@ -126,9 +125,9 @@ public class MyLevel extends Level{
 					GPM.completionTime = 2*(MAX_COMPLETION_TIME - MIN_COMPLETION_TIME)/3;
 					break;
 				case COMPLETIONIST:
-					GPM.coinsCollected = 100;
-					GPM.totalCoins = 100;
-					GPM.totalEnemies = 100;
+					GPM.coinsCollected = MAX_COINS;
+					GPM.totalCoins = MAX_COINS;
+					GPM.totalEnemies = MAX_ENEMIES;
 					GPM.GoombasKilled = (int) (.30 * GPM.totalEnemies);
 					GPM.RedTurtlesKilled = (int) (.30 * GPM.totalEnemies);
 					GPM.GreenTurtlesKilled = (int) (.30 * GPM.totalEnemies);
@@ -142,13 +141,14 @@ public class MyLevel extends Level{
 			int result;
 
 			result = (int) (getKillPercentage() * GPM.totalEnemies * 2);
-			System.out.println(GPM.totalEnemies + " // " + result);
+			
 			if (result < MIN_ENEMIES) {
 				result = MIN_ENEMIES;
 			} else if (result > MAX_ENEMIES) {
 				result = MAX_ENEMIES;
 			}
-
+			//System.out.println(GPM.totalEnemies + " // " + result);
+			
 			return result;
 		}
 
@@ -156,12 +156,13 @@ public class MyLevel extends Level{
 			int result;
 
 			result = (int) (getCoinPercentage() * GPM.totalCoins * 2);
-			//System.out.println(GPM.totalCoins + " // " + result);
+			
 			if (result < MIN_COINS) {
 				result = MIN_COINS;
 			} else if (result > MAX_COINS) {
 				result = MAX_COINS;
 			}
+			System.out.println(GPM.totalCoins + " // " + result);
 
 			return result;
 		}
@@ -328,109 +329,106 @@ public class MyLevel extends Level{
 			buildHills(2, 5 , 2 , 10 , 2);
 			buildHills(3, 5 , 2 , 10 , 2);*/
 
-			setPlayerType(PlayerStyle.KILLER);
+			setPlayerType(PlayerStyle.COLLECTOR);
 
 			buildDependentGround();
 			buildDependentHills(1);
 			buildDependentHills(2);
 			buildDependentHills(3);
 
+			placePipes(0.1f);
+			placeCannons(0.05f);
+
 			buildDependentCoins();
 			buildDependentEnemies();
 
 
-			//set the end piece
-			int floor = height - 1 - random.nextInt(4);
-			int length = width - 64;
-			xExit = length + 8;
-			yExit = floor;
 
-			
-
-			// fills the end piece
-			for (int x = length; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					if (y >= floor)
-					{
-						elevMap[0][x] = floor;
-						setBlock(x, y, GROUND);
-					}
-				}
-			}
-
-			/*for (int t = 0; t< width; t++){
-				System.out.print(elevMap[0][t] + ", ");
-			}
-
-			System.out.println();
-
-			for (int t = 0; t< width; t++){
-					System.out.print(elevMap[1][t] + ", ");
-			}*/
+	        //set the end piece
+	        int floor = height - 1 - random.nextInt(4);
+	        int length = width - 64;
+	        xExit = length + 8;
+	        yExit = floor;
 
 
-			if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
-			{
-				int ceiling = 0;
-				int run = 0;
-				for (int x = 0; x < width; x++)
-				{
-					if (run-- <= 0 && x > 4)
-					{
-						ceiling = random.nextInt(4);
-						run = random.nextInt(4) + 4;
-					}
-					for (int y = 0; y < height; y++)
-					{
-						if ((x > 4 && y <= ceiling) || x < 1)
-						{
-							setBlock(x, y, GROUND);
-						}
-					}
-				}
-			}
-
-			fixWalls();
-
-		}
-
-		private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, float gapFrequency){
-			int maxElevation = height - 8;
-			int length = 0;
-
-			//starting position
-			buildGround(0, 10, height -1);
-			length += 10;
-			
-			int curElevation = height -1;
-			while (length < width - 64)
-			{
-				if (getBlock(length-1, height - 1) != 0 && random.nextFloat() <= gapFrequency){
-					//make a gap
-					length += 1 + random.nextInt(4);
-				} else {
-					//create more ground
-					//System.out.println(maxFlatStretch - minFlatStretch + 1);
-					int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
-					//System.out.println(maxElevationChange);
-					int elevationChange = random.nextInt(maxElevationChange + 1);
-					//int elevationChange = maxElevationChange;
-					if (random.nextInt(2) == 0 || curElevation < maxElevation + maxElevationChange)
-						curElevation += elevationChange;
-					else 
-						curElevation -= elevationChange;
-
-					if (curElevation > height - 1) 
-						curElevation = height - 1;
-					else if (curElevation < maxElevation) 
-						curElevation = maxElevation;
+	        // fills the end piece
+	        for (int x = length; x < width; x++)
+	        {
+	            for (int y = 0; y < height; y++)
+	            {
+	                if (y >= floor)
+	                {
+	                	elevMap[0][x] = floor;
+	                    setBlock(x, y, GROUND);
+	                }
+	            }
+	        }
+	        
 
 
-					buildGround(length, stretch, curElevation);
-					for (int t = 0; t < 4; t++) {
-						for (int x = length; x < length + stretch; x++) {
+	        if (type == LevelInterface.TYPE_CASTLE || type == LevelInterface.TYPE_UNDERGROUND)
+	        {
+	            int ceiling = 0;
+	            int run = 0;
+	            for (int x = 0; x < width; x++)
+	            {
+	                if (run-- <= 0 && x > 4)
+	                {
+	                    ceiling = random.nextInt(4);
+	                    run = random.nextInt(4) + 4;
+	                }
+	                for (int y = 0; y < height; y++)
+	                {
+	                    if ((x > 4 && y <= ceiling) || x < 1)
+	                    {
+	                        setBlock(x, y, GROUND);
+	                    }
+	                }
+	            }
+	        }
+
+	        fixWalls();
+
+	    }
+
+	    
+
+	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, float gapFrequency){
+	    	int maxElevation = height - 8;
+	    	int length = 0;
+
+	    	//starting position
+	        buildGround(0, 10, height -1);
+	        length += 10;
+	        
+	        int curElevation = height -1;
+	        while (length < width - 64)
+	        {
+	        	
+	        	if (getBlock(length-1, height - 1) != 0 && random.nextFloat() <= gapFrequency) {
+	        		//make a gap
+	        		length += 1 + random.nextInt(4);
+	        	} else {
+	        		//create more ground
+		        	int stretch  = minFlatStretch + random.nextInt(maxFlatStretch - minFlatStretch + 1);
+		        	if (length + stretch > width - 64) 
+		        		stretch = width - 64 - length;
+		        	int elevationChange = random.nextInt(maxElevationChange + 1);
+		        	//int elevationChange = maxElevationChange;
+
+		        	if (random.nextInt(2) == 0 || curElevation < maxElevation + maxElevationChange)
+		        		curElevation += elevationChange;
+		        	else 
+		        		curElevation -= elevationChange;
+
+		        	if (curElevation > height - 1) 
+		        		curElevation = height - 1;
+		        	else if (curElevation < maxElevation) 
+		        		curElevation = maxElevation;
+
+		        	buildGround(length, stretch, curElevation);
+		        	for (int t = 0; t<4; t++){
+		        		for (int x = length; x < length + stretch; x++){
 							elevMap[t][x] = curElevation;
 						}
 					}
@@ -502,7 +500,7 @@ public class MyLevel extends Level{
 
 			calculateEnemyProbabilities();
 
-			System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
+			//System.out.println(numEnemiesToSpawn + " // " + possibleLocations.size());
 			// randomly select possible spawn locations from the list, spawn the enemies, remove the used spawn locations from the list
 			int enemiesLeft = numEnemiesToSpawn;
 			while (possibleLocations.size() > 0 && enemiesLeft > 0) {
@@ -544,7 +542,7 @@ public class MyLevel extends Level{
 					if (elevMap[passNo - 1][x] < localMaxElevation)
 						localMaxElevation = elevMap[passNo - 1][x];
 				}
-					
+
 				if (random.nextFloat() <= frequency && localMaxElevation < height){
 					buildHill(length, localMaxElevation - elevationChange, length + stretch - 1, height);
 					for (int i = passNo; i < 4; i++){
@@ -555,7 +553,6 @@ public class MyLevel extends Level{
 				}
 
 				length += stretch + 2;
-				
 			}
 		
 		}
@@ -564,6 +561,53 @@ public class MyLevel extends Level{
 			calculateHillParameters();
 			buildHills(passNo, MAX_HILL_ELEVATION_CHANGE, MIN_HILL_STRETCH, MAX_HILL_STRETCH, (float) HILL_FREQUENCY);
 		}
+	    
+	    private void placePipes(float frequency){
+	    	int length = 0;
+	    	
+			//System.out.println();
+
+	    	for (int x = 10; x < width-64; x+=2){
+
+	    		if (random.nextFloat() <= frequency){
+	    			if (elevMap[0][x] == elevMap[0][x+1] && elevMap[0][x] < height){
+	    				//System.out.println(height);
+	    				//System.out.println(elevMap[0][x] + ", " + elevMap[0][x+1]);
+	    				int pipeHeight = 2 + random.nextInt(5);
+	    				if (elevMap[3][x-1] - (elevMap[0][x] - pipeHeight) < 5){
+	    					buildPipe(x, elevMap[0][x] - pipeHeight, elevMap[0][x]-1, false);
+	    					elevMap[0][x]   = elevMap[0][x]     - pipeHeight;
+    						elevMap[0][x+1] = elevMap[0][x + 1] - pipeHeight;
+	    					for (int i = 1; i < 4; i++){
+	    						elevMap[i][x]   = Math.min(elevMap[i][x],     elevMap[0][x]);
+	    						elevMap[i][x+1] = Math.min(elevMap[i][x + 1], elevMap[0][x + 1]);
+	    					}
+	    				}
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    private void placeCannons(float frequency){
+	    	int tier = random.nextInt(4);
+	    	//tier = 1;
+	    		
+	    	for (int x = 10; x < width-64; x+=1){
+		    	//System.out.println(elevMap[1][x]);
+
+	    		if (random.nextFloat() <= frequency){
+	    			if (elevMap[tier][x] < height && 
+	    				getBlock(x,elevMap[tier][x]) != Level.TUBE_TOP_LEFT && 
+	    				getBlock(x,elevMap[tier][x]) != Level.TUBE_TOP_RIGHT){
+	    				if (elevMap[3][x-1] - (elevMap[tier][x] - 2) < 5){
+
+	    					buildCannon(x,elevMap[tier][x]-2, elevMap[tier][x] - 1);
+	    				}
+	    				
+	    			}
+	    		}
+	    	}
+	    }
 
 
 		private void buildHill(int xi, int yi, int xf, int yf) {
