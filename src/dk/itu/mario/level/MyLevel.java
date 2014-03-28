@@ -336,8 +336,8 @@ public class MyLevel extends Level{
 			buildDependentHills(2);
 			buildDependentHills(3);
 
-			placePipes(0.5f);
-			placeCannons(0);
+			placePipes(0.1f);
+			placeCannons(0.05f);
 
 			buildDependentCoins();
 			buildDependentEnemies();
@@ -389,9 +389,7 @@ public class MyLevel extends Level{
 
 	        fixWalls();
 
-	    }
-
-	    
+	    }	    
 
 	    private void buildCompleteGround(int maxElevationChange, int minFlatStretch, int maxFlatStretch, float gapFrequency){
 	    	int maxElevation = height - 8;
@@ -528,7 +526,6 @@ public class MyLevel extends Level{
 		private void buildHills(int passNo, int maxElevationChange, int minFlatStretch, int maxFlatStretch, float frequency){
 			int length = 10;
 
-			
 			while (length < width - 64)
 			{
 				//make a hill
@@ -543,7 +540,7 @@ public class MyLevel extends Level{
 						localMaxElevation = elevMap[passNo - 1][x];
 				}
 
-				if (random.nextFloat() <= frequency && localMaxElevation < height){
+				if (random.nextFloat() <= frequency && localMaxElevation < height && localMaxElevation - elevationChange > 2){
 					buildHill(length, localMaxElevation - elevationChange, length + stretch - 1, height);
 					for (int i = passNo; i < 4; i++){
 						for (int x = length; x < length + stretch; x++){
@@ -554,7 +551,6 @@ public class MyLevel extends Level{
 
 				length += stretch + 2;
 			}
-		
 		}
 
 		private void buildDependentHills(int passNo) {
@@ -609,7 +605,6 @@ public class MyLevel extends Level{
 	    	}
 	    }
 
-
 		private void buildHill(int xi, int yi, int xf, int yf) {
 			// xi : left edge x-coordinate
 			// yi : top edge y-coordinate
@@ -644,8 +639,6 @@ public class MyLevel extends Level{
 			// automatically fill hill to bottom of map
 			this.buildHill(xi, yi, xf, height-1);
 		}
-
-
 
 		private void buildPipe(int xi, int yi, int yf, boolean flower) {
 			// xi : left edge x-coordinate
@@ -696,16 +689,8 @@ public class MyLevel extends Level{
 			setBlock(x, y, Level.COIN);
 		}
 
-		private void buildCoins(int xi, int yi, int xf, int yf) {
-			// xi : left edge x-coordinate
-			// yi : top edge y-coordinate
-			// xf : right edge x-coordinate
-			// yf : bottom edge y-coordinate
-			for (int x = xi; x <= xf; x++) {
-				for (int y = yi; y <= yf; y++) {
-					buildCoin(x, y);
-				}
-			}
+		private void buildEmptyBlocks() {
+
 		}
 
 		private void buildBlockEmpty(int x, int y) {
