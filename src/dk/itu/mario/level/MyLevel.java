@@ -82,7 +82,7 @@ public class MyLevel extends Level{
 			elevMap = new int[4][width];
 			for (int i = 0; i < 4; i++){
 				for (int j = 0; j < width; j++){
-					elevMap[i][j] = height-1;
+					elevMap[i][j] = height;
 				}
 			}
 
@@ -336,8 +336,8 @@ public class MyLevel extends Level{
 			buildDependentHills(2);
 			buildDependentHills(3);
 
-			placePipes(0.1f);
-			placeCannons(0.05f);
+			placePipes(0.5f);
+			placeCannons(0);
 
 			buildDependentCoins();
 			buildDependentEnemies();
@@ -573,7 +573,7 @@ public class MyLevel extends Level{
 	    			if (elevMap[0][x] == elevMap[0][x+1] && elevMap[0][x] < height){
 	    				//System.out.println(height);
 	    				//System.out.println(elevMap[0][x] + ", " + elevMap[0][x+1]);
-	    				int pipeHeight = 2 + random.nextInt(5);
+	    				int pipeHeight = 2 + random.nextInt(3);
 	    				if (elevMap[3][x-1] - (elevMap[0][x] - pipeHeight) < 5){
 	    					buildPipe(x, elevMap[0][x] - pipeHeight, elevMap[0][x]-1, false);
 	    					elevMap[0][x]   = elevMap[0][x]     - pipeHeight;
